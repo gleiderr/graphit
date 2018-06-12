@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-16">
+	<title>Graph-it</title>
+</head>
+<body>
+	<input id="input" type="file" name="" accept=".json" oninput="handle(this.files)">
+	<script type="text/javascript">
+		let json = null;
+
+		class Graphit {
+			constructor (obj, id) {
+				this.obj = obj;
+				this.id = id;
+				this.node = obj[id];
+			}
+
+			get children() {
+				let a = [];
+				for(let i = 0; i < this.node.content.length; i++) {
+					a.push(new Graphit(this.obj, this.node.content[i]));
+				}
+				return a;
+			}
+
+			get next() {
+				return new Graphit(this.obj, this.node.next);
+			}
+
+			get neighbors() {
+				let ns = [];
+				debugger;
+				for(let i = 0; i < this.node.edges; i++) {
+					let text = this.node.edges[i][0];
+					for(j = 1; j < this.node.edges[i].length; j++){
+						let node = new Graphit(this.obj, this.node.edges[i][j]);
+						ns.push({text, node});
+					}
+				}
+
+				return ns;
+			}
+
+			get text() {
+				return this.node.text;
+			}
+		}	
+		
+		function handle(files) {
+			var reader = new FileReader();
+			reader.onload = (e) => {
+				json = JSON.parse(e.target.result);
+				graphit(JSON.parse(e.target.result));
+			};
+
+			reader.readAsText(files[0]);
+		}
+
+		function graphit(json) {
+			//Exibe conteúdo de "0" em uma div filha de <body>
+			let g = new Graphit(json, "0");
+			console.log(g);
+			let n = json[0];
+			let e = document.createElement("div");
+			e.innerHTML = n.text;
+
+			let root = document.createElement("div");
+			root.append(e);
+
+			for(let i = 0; i < n.content; i ++) {
+				let n_aux = json[n.content[i]];
+				newChild = document.createElement("div");
+				newChild.innerHTML = n_aux.text;
+				e.append(newChild.firstChild);
+			}
+			
+			let n_aux = n;
+			while(n_aux = json[n_aux.next]) {
+				newChild = document.createElement("div");
+				newChild.innerHTML = n_aux.text;
+				while(newChild.firstChild){
+					if(typeof newChild.firstChild == 'string') {
+						root.appendChild(document.createTextNode(newChild.firstChild));
+					} else {
+						root.appendChild(newChild.firstChild);
+					}
+				}
+			}
+
+			document.body.append(root);
+		}
+
+
+	</script>
+</body>
+</html>
