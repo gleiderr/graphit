@@ -18,34 +18,37 @@
 
 			get children() {
 				let a = [];
-				for(let i = 0; i < this.node.content.length; i++) {
-					a.push(new Graphit(this.obj, this.node.content[i]));
+				if(this.node.content) {
+					for(let i = 0; i < this.node.content.length; i++) {
+						a.push(new Graphit(this.obj, this.node.content[i]));
+					}
 				}
 				return a;
 			}
 
 			get next() {
-				return new Graphit(this.obj, this.node.next);
+				if(this.obj[this.id].next) return new Graphit(this.obj, this.node.next);
+				return null;
 			}
 
-			get neighbors() {
-				let ns = [];
-				debugger;
-				for(let i = 0; i < this.node.edges; i++) {
-					let text = this.node.edges[i][0];
-					for(j = 1; j < this.node.edges[i].length; j++){
-						let node = new Graphit(this.obj, this.node.edges[i][j]);
-						ns.push({text, node});
+			get edges() {
+				let es = [];
+				if (this.node.multi_edges){
+					for (let multi_edge of this.node.multi_edges) {
+						let text = multi_edge[0];
+						for(let i = 1; i < multi_edge.length; i++) {
+							let to = new Graphit(this.obj, multi_edge[i]);
+							es.push({text, to});
+						}
 					}
 				}
-
-				return ns;
+				return es;
 			}
 
 			get text() {
 				return this.node.text;
 			}
-		}	
+		}
 		
 		function handle(files) {
 			var reader = new FileReader();
@@ -59,14 +62,17 @@
 
 		function graphit(json) {
 			//Exibe conteúdo de "0" em uma div filha de <body>
-			let g = new Graphit(json, "0");
-			console.log(g);
-			let n = json[0];
-			let e = document.createElement("div");
+			let root = document.createElement("div");
+
+			let n = new Graphit(json, "0");
+			let e = ell(n.text);
+			root.appendChild(e);
+
+			for (let child of n.children) e.appendChild(ell(child.text));
+
+			/*let e = document.createElement("div");
 			e.innerHTML = n.text;
 
-			let root = document.createElement("div");
-			root.append(e);
 
 			for(let i = 0; i < n.content; i ++) {
 				let n_aux = json[n.content[i]];
@@ -86,12 +92,16 @@
 						root.appendChild(newChild.firstChild);
 					}
 				}
-			}
+			}*/
 
 			document.body.append(root);
 		}
 
-
+		function ell(text) {
+			let e = document.createElement('div');
+			e.innerHTML = text;
+			return e;
+		}
 	</script>
 </body>
 </html>
