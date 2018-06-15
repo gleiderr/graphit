@@ -67,6 +67,8 @@
 			let n = new Graphit(json, "0");
 			let e = ell(n.text);
 			root.appendChild(e);
+          
+          for(let neighbor of n.neighborhood) e.appendChild(ell(neighbor.text, 'span'));
 
 			for (let child of n.children) e.appendChild(ell(child.text));
 
@@ -97,8 +99,8 @@
 			document.body.append(root);
 		}
 
-		function ell(text) {
-			let e = document.createElement('div');
+		function ell(text, type = 'div') {
+			let e = document.createElement(type);
 			e.innerHTML = text;
 			return e;
 		}
