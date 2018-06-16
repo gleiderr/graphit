@@ -4,6 +4,14 @@
 	<meta charset="UTF-16">
 	<title>Graph-it</title>
 </head>
+
+<style type="text/css">
+	div {
+		margin-left: 1em;
+		border-left: solid;
+		border-left-width: 1px;
+	}
+</style>
 <body>
 	<input id="input" type="file" name="" accept=".json" oninput="handle(this.files)">
 	<script type="text/javascript">
@@ -67,8 +75,8 @@
 			let n = new Graphit(json, "0");
 			let e = ell(n.text);
 			root.appendChild(e);
-          
-          for(let neighbor of n.neighborhood) e.appendChild(ell(neighbor.text, 'span'));
+
+			for(let neighbor of n.neighborhood) e.appendChild(ell(neighbor.text, '<span></span>'));
 
 			for (let child of n.children) e.appendChild(ell(child.text));
 
@@ -99,8 +107,11 @@
 			document.body.append(root);
 		}
 
-		function ell(text, type = 'div') {
-			let e = document.createElement(type);
+		function ell(text, tag = '<div></div>') {
+			let e = document.createElement('div');
+			e.innerHTML = tag;
+
+			e = e.firstChild;
 			e.innerHTML = text;
 			return e;
 		}
