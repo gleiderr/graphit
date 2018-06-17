@@ -79,6 +79,12 @@
 			for(let neighbor of n.neighborhood) e.appendChild(ell(neighbor.text, '<span></span>'));
 
 			for (let child of n.children) e.appendChild(ell(child.text));
+          
+          let p = e.parentNode;
+          for (let next = n.next; next; next = next.next) {
+            p.appendChild(ell(next.text));
+            next = next.next;
+            }
 
 			/*let e = document.createElement("div");
 			e.innerHTML = n.text;
