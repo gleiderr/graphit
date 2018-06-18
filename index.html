@@ -73,10 +73,10 @@
 			let root = document.createElement("div");
 
 			let n = new Graphit(json, "0");
-			let e = ell(n.text);
+			let e = ell(n.text, '<div class="node"></div>)';
 			root.appendChild(e);
 
-			for(let neighbor of n.neighborhood) e.appendChild(ell(neighbor.text, '<span></span>'));
+			for(let neighbor of n.neighborhood) e.appendChild(ell(neighbor.text, '<div class="neighbor"></div>'));
 
 			for (let child of n.children) e.appendChild(ell(child.text));
           
