@@ -6,10 +6,16 @@
 </head>
 
 <style type="text/css">
-	div {
-		margin-left: 1em;
+	.nodo {
 		border-left: solid;
 		border-left-width: 1px;
+		border-left-style: dotted;
+		padding-left: 13px;
+	}
+	.referencia {
+		border-left-color: cornflowerblue;
+		font-size: small;
+		background: aliceblue;
 	}
 </style>
 <body>
@@ -73,18 +79,18 @@
 			let root = document.createElement("div");
 
 			let n = new Graphit(json, "0");
-			let e = ell(n.text, '<div class="node"></div>)';
+			let e = ell(n.text, '<div class="nodo"></div>)');
 			root.appendChild(e);
 
-			for(let neighbor of n.neighborhood) e.appendChild(ell(neighbor.text, '<div class="neighbor"></div>'));
+			for(let neighbor of n.neighborhood) e.appendChild(ell(neighbor.text, '<div class="nodo referencia"></div>'));
 
-			for (let child of n.children) e.appendChild(ell(child.text));
-          
-          let p = e.parentNode;
-          for (let next = n.next; next; next = next.next) {
-            p.appendChild(ell(next.text));
-            next = next.next;
-            }
+			for (let child of n.children) e.appendChild(ell(child.text, '<div class="nodo"></div>'));
+
+ 			let p = e.parentNode;
+ 			for (let next = n.next; next; next = next.next) {
+ 				p.appendChild(ell(next.text, '<div class="nodo"></div>'));
+ 				next = next.next;
+ 			}
 
 			/*let e = document.createElement("div");
 			e.innerHTML = n.text;
