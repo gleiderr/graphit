@@ -92,30 +92,6 @@
  				next = next.next;
  			}
 
-			/*let e = document.createElement("div");
-			e.innerHTML = n.text;
-
-
-			for(let i = 0; i < n.content; i ++) {
-				let n_aux = json[n.content[i]];
-				newChild = document.createElement("div");
-				newChild.innerHTML = n_aux.text;
-				e.append(newChild.firstChild);
-			}
-			
-			let n_aux = n;
-			while(n_aux = json[n_aux.next]) {
-				newChild = document.createElement("div");
-				newChild.innerHTML = n_aux.text;
-				while(newChild.firstChild){
-					if(typeof newChild.firstChild == 'string') {
-						root.appendChild(document.createTextNode(newChild.firstChild));
-					} else {
-						root.appendChild(newChild.firstChild);
-					}
-				}
-			}*/
-
 			document.body.append(root);
 		}
 
