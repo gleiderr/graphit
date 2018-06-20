@@ -62,8 +62,8 @@
 					for (let multi_edge of this.node.multi_edges) {
 						let text = multi_edge[0];
 						for(let i = 1; i < multi_edge.length; i++) {
-							let to = new Graphit(this.obj, multi_edge[i]);
-							es.push({text, to});
+							let node = new Graphit(this.obj, multi_edge[i]);
+							es.push({text, node});
 						}
 					}
 				}
@@ -87,32 +87,48 @@
 
 		function graphit(json) {
 			init();
-			//Exibe conteúdo de "0" em uma div filha de <body>
-			let root = document.createElement("div");
+			//Exibe conteúdo de "0" em uma filha de <body>
+			show('0', document.body, json);
 
-			let n = new Graphit(json, "0");
-			let e = ell(n.text, '<div class="nodo"></div>)');
-			root.appendChild(e);
-
-			for(let neighbor of n.neighborhood) e.appendChild(ell(neighbor.text, '<div class="nodo referencia"></div>'));
-
-			for (let child of n.children) e.appendChild(ell(child.text, '<div class="nodo"></div>'));
-
- 			let p = e.parentNode;
- 			for (let next = n.next; next; next = next.next) {
- 				p.appendChild(ell(next.text, '<div class="nodo"></div>'));
- 				next = next.next;
- 			}
-
-			document.body.append(root);
+			let nodos = document.querySelectorAll('.nodo');
+			for (let i = 0; i < nodos.length; i++) {
+				let nodo = nodos[i];
+				nodo.addEventListener('dblclick', event => {
+					console.log('teste');
+					event.stopPropagation();
+				});
+			}
 		}
 
-		function ell(text, tag = '<div></div>') {
+		function show(id, parent, json) {
+			let n = new Graphit(json, id);
+			let e = ell(n, '<div class="nodo"></div>)');
+			parent.appendChild(e);
+
+			//Exibição das referências
+			for(let neighbor of n.neighborhood) {
+				e.appendChild(ell(neighbor.node, '<div class="nodo referencia"></div>'));
+			}
+
+			//Exibição do conteúdo
+			for (let child of n.children){
+				e.appendChild(ell(child, '<div class="nodo"></div>'));
+			}
+
+			//Exibição dos irmãos
+ 			for (let next = n.next; next; next = next.next) {
+ 				parent.appendChild(ell(next, '<div class="nodo"></div>'));
+ 				next = next.next;
+ 			}
+		}
+
+		function ell(node, tag = '<div></div>') {
 			let e = document.createElement('div');
 			e.innerHTML = tag;
 
 			e = e.firstChild;
-			e.innerHTML = text;
+			e.innerHTML = node.text;
+			e.setAttribute('data-nodo', node.id);
 			return e;
 		}
 	</script>
