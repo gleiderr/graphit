@@ -19,9 +19,20 @@
 	}
 </style>
 <body>
-	<input id="input" type="file" name="" accept=".json" oninput="handle(this.files)">
+	
 	<script type="text/javascript">
 		let json = null;
+
+		init();
+
+		function init() {
+			let input = document.createElement('div');
+			input.innerHTML = '<input id="input" type="file" name="" accept=".json" oninput="handle(this.files)">';
+			input = input.firstChild;
+
+			document.body.innerHTML = '';
+			document.body.appendChild(input);
+		};
 
 		class Graphit {
 			constructor (obj, id) {
@@ -75,6 +86,7 @@
 		}
 
 		function graphit(json) {
+			init();
 			//Exibe conteúdo de "0" em uma div filha de <body>
 			let root = document.createElement("div");
 
