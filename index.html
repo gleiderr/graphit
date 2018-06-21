@@ -88,39 +88,8 @@
 		function graphit(json) {
 			init();
 			//Exibe conteúdo de "0" em uma filha de <body>
-			show('0', document.body, json);
-
-			let nodos = document.querySelectorAll('.nodo');
-			for (let i = 0; i < nodos.length; i++) {
-				let nodo = nodos[i];
-				nodo.addEventListener('dblclick', event => {
-					console.log('teste');
-					event.stopPropagation();
-				});
-			}
-		}
-
-		function show(id, parent, json) {
-			let n = new Graphit(json, id);
-			let e = ell(n, '<div class="nodo"></div>)');
-			parent.appendChild(e);
-
-			//Exibição das referências
-			for(let neighbor of n.neighborhood) {
-				e.appendChild(ell(neighbor.node, '<div class="nodo referencia"></div>'));
-			}
-
-			//Exibição do conteúdo
-			for (let child of n.children){
-				e.appendChild(ell(child, '<div class="nodo"></div>'));
-			}
-
-			//Exibição dos irmãos
- 			for (let next = n.next; next; next = next.next) {
- 				parent.appendChild(ell(next, '<div class="nodo"></div>'));
- 				next = next.next;
- 			}
-		}
+			document.body.appendChild(ell(new Graphit(json, '0'), '<div class="nodo"></div>)'));
+		}		
 
 		function ell(node, tag = '<div></div>') {
 			let e = document.createElement('div');
@@ -129,7 +98,32 @@
 			e = e.firstChild;
 			e.innerHTML = node.text;
 			e.setAttribute('data-nodo', node.id);
+			e.addEventListener('dblclick', event => {
+				if(!event.target.expanded) {
+					event.target.expanded = true;
+					expand(event.target);
+				}
+				event.stopPropagation();
+			});
 			return e;
+		}
+
+		function expand(element) {
+			let n = new Graphit(json, element.getAttribute('data-nodo'));
+
+			//Exibição das referências
+			for(let neighbor of n.neighborhood) {
+				element.appendChild(ell(neighbor.node, '<div class="nodo referencia"></div>'));
+			}
+
+			//Exibição do conteúdo
+			for (let child of n.children){
+				element.appendChild(ell(child, '<div class="nodo"></div>'));
+				//Exibição dos irmãos
+	 			for (let next = child.next; next; next = next.next) {
+	 				element.appendChild(ell(next, '<div class="nodo"></div>'));
+	 			}
+			}
 		}
 	</script>
 </body>
