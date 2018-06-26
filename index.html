@@ -130,10 +130,6 @@
 			//Exibição do conteúdo
 			for (let child of n.children){
 				element.appendChild(ell(child, '<div class="nodo"></div>'));
-				//Exibição dos irmãos
-	 			for (let next = child.next; next; next = next.next) {
-	 				element.appendChild(ell(next, '<div class="nodo"></div>'));
-	 			}
 			}
 		}
 	</script>
