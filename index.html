@@ -63,10 +63,10 @@
 				let es = [];
 				if (this.node.multi_edges){
 					for (let multi_edge of this.node.multi_edges) {
-						let text = multi_edge[0];
+						let edge_text = multi_edge[0];
 						for(let i = 1; i < multi_edge.length; i++) {
 							let node = new Graphit(this.obj, multi_edge[i]);
-							es.push({text, node});
+							es.push({edge_text, node});
 						}
 					}
 				}
@@ -95,7 +95,8 @@
 		function graphit(json) {
 			init();
 			//Exibe conteúdo de "0" em uma filha de <body>
-			document.body.appendChild(ell(new Graphit(json, '0'), '<div class="nodo"></div>)'));
+			let first = new Graphit(json, '0');
+			document.body.appendChild(ell(first, `<div class="nodo">${first.text}</div>)`));
 
 			document.body.addEventListener('dblclick', event => {
 				if(event.target.classList.contains('expansivel')) {
@@ -106,12 +107,11 @@
 			});
 		}		
 
-		function ell(node, tag = '<div></div>') {
+		function ell(node, content) {
 			let e = document.createElement('div');
-			e.innerHTML = tag;
+			e.innerHTML = content;
 
 			e = e.firstChild;
-			e.innerHTML = node.text;
 			e.setAttribute('data-nodo', node.id);
 
 			if(node.hasEdges()) e.classList.add('expansivel');
@@ -124,12 +124,15 @@
 
 			//Exibição das referências
 			for(let neighbor of n.neighborhood) {
-				element.appendChild(ell(neighbor.node, '<div class="nodo referencia"></div>'));
+				let content = '<div class="nodo referencia">'
+							  +	`${neighbor.edge_text}: ${neighbor.node.text}`
+							  + '</div>';
+				element.appendChild(ell(neighbor.node, content));
 			}
 
 			//Exibição do conteúdo
 			for (let child of n.children){
-				element.appendChild(ell(child, '<div class="nodo"></div>'));
+				element.appendChild(ell(child, `<div class="nodo">${child.text}</div>`));
 			}
 		}
 	</script>
