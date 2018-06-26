@@ -61,13 +61,11 @@
 
 			get neighborhood() {
 				let es = [];
-				if (this.node.multi_edges){
-					for (let multi_edge of this.node.multi_edges) {
-						let edge_text = multi_edge[0];
-						for(let i = 1; i < multi_edge.length; i++) {
-							let node = new Graphit(this.obj, multi_edge[i]);
-							es.push({edge_text, node});
-						}
+				if (this.node.edges){
+					for (let edge of this.node.edges) {
+						let edge_text = edge[0];
+						let node = new Graphit(this.obj, edge[1]);
+						es.push({edge_text, node});
 					}
 				}
 				return es;
@@ -77,8 +75,12 @@
 				return this.node.text;
 			}
 
+			hasContent() {
+				return Boolean(this.node.content && this.node.content.length);
+			}
+
 			hasEdges() {
-				return Boolean(this.node.content || (this.node.multi_edges && this.node.multi_edges.length));
+				return Boolean(this.node.edges && this.node.edges.length);
 			}
 		}
 		
@@ -114,7 +116,7 @@
 			e = e.firstChild;
 			e.setAttribute('data-nodo', node.id);
 
-			if(node.hasEdges()) e.classList.add('expansivel');
+			if(node.hasEdges() || node.hasContent()) e.classList.add('expansivel');
 
 			return e;
 		}
