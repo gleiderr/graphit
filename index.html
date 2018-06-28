@@ -54,11 +54,6 @@
 				return a;
 			}
 
-			get next() {
-				if(this.obj[this.id].next) return new Graphit(this.obj, this.node.next);
-				return null;
-			}
-
 			get neighborhood() {
 				let es = [];
 				if (this.node.edges){
