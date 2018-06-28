@@ -66,8 +66,8 @@
 				return es;
 			}
 
-			get text() {
-				return this.node.text;
+			get data() {
+				return this.node.data;
 			}
 
 			hasContent() {
@@ -93,7 +93,7 @@
 			init();
 			//Exibe conteúdo de "0" em uma filha de <body>
 			let first = new Graphit(json, '0');
-			document.body.appendChild(ell(first, `<div class="nodo">${first.text}</div>)`));
+			document.body.appendChild(ell(first, `<div class="nodo">${first.data}</div>)`));
 
 			document.body.addEventListener('dblclick', event => {
 				if(event.target.classList.contains('expansivel')) {
@@ -122,14 +122,14 @@
 			//Exibição das referências
 			for(let neighbor of n.neighborhood) {
 				let content = '<div class="nodo referencia">'
-							  +	`${neighbor.edge_text}: ${neighbor.node.text}`
+							  +	`${neighbor.edge_text}: ${neighbor.node.data}`
 							  + '</div>';
 				element.appendChild(ell(neighbor.node, content));
 			}
 
 			//Exibição do conteúdo
 			for (let child of n.children){
-				element.appendChild(ell(child, `<div class="nodo">${child.text}</div>`));
+				element.appendChild(ell(child, `<div class="nodo">${child.data}</div>`));
 			}
 		}
 	</script>
