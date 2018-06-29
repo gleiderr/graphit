@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="UTF-16">
-	<title>Graph-it</title>
+	<title>Graphit 🖉</title>
 </head>
 
 <style type="text/css">
@@ -39,7 +39,7 @@
 			input.innerHTML = '<input id="input" type="file" name="" accept=".json" oninput="handle(this.files)">';
 			input = input.firstChild;
 
-			document.body.innerHTML = '🖉';
+			document.body.innerHTML = '';
 			document.body.appendChild(input);
 		};
 
@@ -101,7 +101,7 @@
 			let first = new Graphit(json, '0');
 			document.body.appendChild(ell(first, `<div class="nodo">${first.data}</div>)`));
 
-			document.body.addEventListener('dblclick', event => {
+			document.body.addEventListener('click', event => {
 				if(event.target.classList.contains('expansivel')) {
 					event.target.classList.remove('expansivel');
 					event.target.classList.add('expandido');
