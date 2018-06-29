@@ -20,6 +20,12 @@
 	.expansivel {
 		cursor: pointer;
 	}
+	.expansivel::before {
+		content: '▸';
+	}
+	.expandido::before {
+		content: '▾'
+	}
 </style>
 <body>
 	
@@ -33,7 +39,7 @@
 			input.innerHTML = '<input id="input" type="file" name="" accept=".json" oninput="handle(this.files)">';
 			input = input.firstChild;
 
-			document.body.innerHTML = '';
+			document.body.innerHTML = '🖉';
 			document.body.appendChild(input);
 		};
 
@@ -98,6 +104,7 @@
 			document.body.addEventListener('dblclick', event => {
 				if(event.target.classList.contains('expansivel')) {
 					event.target.classList.remove('expansivel');
+					event.target.classList.add('expandido');
 					expand(event.target);
 				}
 				event.stopPropagation();
