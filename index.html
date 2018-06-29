@@ -22,26 +22,18 @@
 	}
 	.expansivel::before {
 		content: '▸';
+		margin-left: -13px;
 	}
 	.expandido::before {
-		content: '▾'
+		content: '▾';
+		margin-left: -13px;
 	}
 </style>
 <body>
-	
 	<script type="text/javascript">
 		let json = null;
 
 		init();
-
-		function init() {
-			let input = document.createElement('div');
-			input.innerHTML = '<input id="input" type="file" name="" accept=".json" oninput="handle(this.files)">';
-			input = input.firstChild;
-
-			document.body.innerHTML = '';
-			document.body.appendChild(input);
-		};
 
 		class Graphit {
 			constructor (obj, id) {
@@ -94,6 +86,15 @@
 
 			reader.readAsText(files[0]);
 		}
+
+		function init() {
+			let input = document.createElement('div');
+			input.innerHTML = '<input id="input" type="file" name="" accept=".json" oninput="handle(this.files)">';
+			input = input.firstChild;
+
+			document.body.innerHTML = '';
+			document.body.appendChild(input);
+		};
 
 		function graphit(json) {
 			init();
