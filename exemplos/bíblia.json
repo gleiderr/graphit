@@ -1,0 +1,77 @@
+{   
+    "0": {
+        "data": "Bíblia King James [35]",
+        "content": [32]
+    },
+    "32": {
+        "data": "Gênesis",
+        "content": [33]
+    },
+    "33": {
+        "data": "Capítulo 1",
+        "content": [31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
+    },
+    "31": { "data": "1 - No princípio, Deus criou os céus e a terra.", "edges": [["Comentário", 35]]},
+    "35": { "data": "Aqui de diz que Deus Criou céus e terra \"No princípio\" e não \"No primeiro dia\". Somente no versículo 5 há a criação do Dia. Isso dá espaço a um vácuo temporal onde vários fatos podem ter ocorrido.", "edges": [["Citação", 4]]},
+    "1": { "data": "2 - A terra, entretanto, era sem forma e vazia. A escuridão cobria o mar que envolvia toda a terra, e o Espírito de Deus se movia sobre a face das águas."},
+    "2": { "data": "3 - Disse Deus: “Haja luz!”, e houve luz.", "edges": [["Comentário", 34]] },
+    "34": { "data": "Creio que este é o tão falado Big Bang. Um simples Haja de Deus!"},
+    "3": { "data": "4 - Viu Deus que a luz era boa; e separou a luz das trevas."},
+    "4": { "data": "5 - Chamou Deus à luz “Dia”, e às trevas chamou “Noite”. Houve então, a tarde e a manhã: o primeiro dia."},
+    "5": { "data": "6 - Depois disse Deus: “Haja entre as águas um limite para separá-las em duas partes!”"},
+    "6": { "data": "7 - Fez, portanto, Deus o firmamento e separou as águas estabelecidas abaixo desse limite, das que ficaram por cima. E assim aconteceu."},
+    "7": { "data": "8 - E Deus ao firmamento deu o nome de “Céu”. A tarde passou, e raiou a manhã: esse foi o segundo dia."},
+    "8": { "data": "9 - Então disse Deus: “Que as águas que estão sob o céu se reúnam num só lugar, a fim de que apareça a parte seca!” E assim aconteceu."},
+    "9": { "data": "10 - Deus outorgou o nome de “Terra” a parte seca, e a massa das águas que se haviam ajuntado Ele chamou de “Mares”. E observou Deus que isso era bom."},
+    "10": { "data": "11 - E determinou: “Que a terra seja coberta com todo tipo de vegetação! Plantas que dêem semente e árvores cujos frutos produzam sementes conforme suas próprias espécies”. E assim aconteceu."},
+    "11": { "data": "12 - E, assim, a terra fez brotar toda a vegetação: ervas que dão sementes segundo sua espécie, e árvores que produzem frutos, cujas sementes estavam neles, de acordo com suas espécies. E observou Deus que isso era bom."},
+    "12": { "data": "13 - Passaram-se a tarde e a manhã: esse foi o terceiro dia."},
+    "13": { "data": "14 - Declarou Deus: “Haja luminares no firmamento do céu a fim de separar o dia da noite; e sirvam eles de sinais para definir as estações, dias e anos;"},
+    "14": { "data": "15 - e que sejam também luzeiros nos céus, para iluminar toda a terra!” E assim aconteceu."},
+    "15": { "data": "16 - Deus fez os dois grandes luzeiros: o maior para governar o dia e o menor para regular o andamento da noite. E formou também as estrelas."},
+    "16": { "data": "17 - Deus colocou todas essas luzes nos céus a fim de iluminarem toda a terra,"},
+    "17": { "data": "18 - para dirigirem o andamento do dia e da noite e fazerem separação entre a luz e a escuridão. E observou Deus que isso era bom."},
+    "18": { "data": "19 - Passaram-se a tarde e a manhã: esse foi o quarto dia."},
+    "19": { "data": "20 - Disse também Deus: “Fervilhem as águas um fervilhar de seres vivos e que as aves voem acima da terra, sob o firmamento do céu!” E assim aconteceu."},
+    "20": { "data": "21 - Dessa forma, Deus criou os grandes animais aquáticos e os demais seres vivos que povoam as águas, em conformidade com suas muitas espécies; e todas as aves, também de acordo com suas espécies. E observou Deus que isso era bom."},
+    "21": { "data": "22 - Então Deus os abençoou, declarando: “Sede fecundos, multiplicai-vos! Enchei as águas dos mares. E que também as aves se multipliquem na terra!”"},
+    "22": { "data": "23 - Passaram-se a tarde e a manhã: esse foi o quinto dia."},
+    "23": { "data": "24 - E disse Deus: “Que a terra produza seres vivos segundo suas espécies: rebanhos domésticos, animais selvagens e todos os demais seres viventes da terra, cada um de acordo com sua espécie!” E assim aconteceu."},
+    "24": { "data": "25 - Deus fez, portanto, todas as feras selvagens segundo suas espécies, os rebanhos domésticos conforme suas espécies, répteis, e todos os demais seres vivos, cada qual de acordo com sua espécie. E observou Deus que isso era bom."},
+    "25": { "data": "26 - Então Deus determinou: “Façamos o ser humano à nossa imagem, de acordo com a nossa semelhança. Dominem eles sobre os peixes do mar, sobre as aves do céu, sobre os grandes animais e todas as feras da terra, e sobre todos os pequenos seres viventes que se movem rente ao chão!”"},
+    "26": { "data": "27 - Deus, portanto, criou os seres humanos à sua imagem, à imagem de Deus os criou: macho e fêmea os criou."},
+    "27": { "data": "28 - Deus os abençoou e lhes ordenou: “Sede férteis e multiplicai-vos! Povoai e sujeitai toda a terra; dominai sobre os peixes do mar, sobre as aves do céu e sobre todo animal que rasteja sobre a terra!”"},
+    "28": { "data": "29 - E acrescentou Deus: “Eis que vos dou todas as plantas que nascem por toda a terra e produzem sementes, e todas as árvores que dão frutos com sementes: esse será o vosso alimento!"},
+    "29": { "data": "30 - Também dou a todos os animais da terra, a todas as aves dos céus, a todos os répteis da terra, e a todas as criaturas em que há fôlego de vida, todos os vegetais existentes, como mantimento e sustento!” E assim aconteceu."},
+    "30": { "data": "31 - Então Deus contemplou toda a sua criação, e eis que tudo era muito bom. Houve, assim, a tarde e a manhã: esse foi o sexto dia."}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

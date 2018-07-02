@@ -1,0 +1,27 @@
+{
+    "0": {
+        "data": "Graphit ✏",
+        "content": [1]
+    },
+    "1": {
+        "data": "Bíblia",
+        "content": [2, 3, 4]
+    },
+    "2": {
+        "data": "Gênesis: No princípio...",
+        "edges": [
+            ["Comentário", 5]
+        ]
+    },
+    "3": {
+        "data": "Êxodo: Israel saindo do Egito",
+        "edges": null
+    },
+    "4": {
+        "data": "Levítico: Doutrinando o povo...",
+        "edges": null
+    },
+    "5": {
+        "data": "Primeiro livro da Bíblia"
+    }
+}
