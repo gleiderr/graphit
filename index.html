@@ -3,104 +3,39 @@
 <head>
 	<meta charset="UTF-16">
 	<title>Graphit 🖉</title>
+	<link rel="stylesheet" type="text/css" href="./style/index.css">
 </head>
-
-<style type="text/css">
-	* {
-		font-family: "Calibri";
-	}
-	.nodo {
-		border-left: solid;
-		border-left-width: 1px;
-		border-left-style: dotted;
-		padding-left: 13px;
-	}
-	.referencia {
-		border-left-color: cornflowerblue;
-		font-size: small;
-		background: aliceblue;
-	}
-	.expansivel {
-		cursor: pointer;
-	}
-	.expansivel::before {
-		content: '▸';
-		margin-left: -13px;
-	}
-	.expandido::before {
-		content: '▾';
-		margin-left: -13px;
-	}
-</style>
 <body>
-	<script type="text/javascript">
+	<script type="module">
+		import Graphit from './graphit.js';
+
 		let json = null;
 
 		init();
-
-		class Graphit {
-			constructor (obj, id) {
-				this.obj = obj;
-				this.id = id;
-				this.node = obj[id];
-			}
-
-			get children() {
-				let a = [];
-				if(this.node.content) {
-					for(let i = 0; i < this.node.content.length; i++) {
-						a.push(new Graphit(this.obj, this.node.content[i]));
-					}
-				}
-				return a;
-			}
-
-			get neighborhood() {
-				let es = [];
-				if (this.node.edges){
-					for (let edge of this.node.edges) {
-						let edge_text = edge[0];
-						let node = new Graphit(this.obj, edge[1]);
-						es.push({edge_text, node});
-					}
-				}
-				return es;
-			}
-
-			get data() {
-				return this.node.data;
-			}
-
-			hasContent() {
-				return Boolean(this.node.content && this.node.content.length);
-			}
-
-			hasEdges() {
-				return Boolean(this.node.edges && this.node.edges.length);
-			}
-		}
 		
-		function handle(files) {
+		function handle(event) {
+			init();
 			var reader = new FileReader();
 			reader.onload = (e) => {
+				
 				json = JSON.parse(e.target.result);
-				graphit(JSON.parse(e.target.result));
+				graphit(json);
 			};
 
-			reader.readAsText(files[0]);
+			reader.readAsText(event.target.files[0]);
 		}
 
 		function init() {
 			let input = document.createElement('div');
-			input.innerHTML = '<input id="input" type="file" name="" accept=".json" oninput="handle(this.files)">';
+			input.innerHTML = '<input id="input" type="file" name="" accept=".json">';
 			input = input.firstChild;
+			input.addEventListener('input', handle);
 
 			document.body.innerHTML = '';
 			document.body.appendChild(input);
 		};
 
 		function graphit(json) {
-			init();
 			//Exibe conteúdo de "0" em uma filha de <body>
 			let first = new Graphit(json, '0');
 			document.body.appendChild(ell(first, `<div class="nodo">${first.data}</div>)`));

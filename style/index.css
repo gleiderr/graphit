@@ -1,0 +1,25 @@
+* {
+		font-family: "Calibri";
+	}
+	.nodo {
+		border-left: solid;
+		border-left-width: 1px;
+		border-left-style: dotted;
+		padding-left: 13px;
+	}
+	.referencia {
+		border-left-color: cornflowerblue;
+		font-size: small;
+		background: aliceblue;
+	}
+	.expansivel {
+		cursor: pointer;
+	}
+	.expansivel::before {
+		content: '▸';
+		margin-left: -13px;
+	}
+	.expandido::before {
+		content: '▾';
+		margin-left: -13px;
+	}
