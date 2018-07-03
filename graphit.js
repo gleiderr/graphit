@@ -10,9 +10,6 @@ export default class Graphit {
 		if(this.node.content) {
 			for(const id of this.node.content)
 				a.push(new Graphit(this.obj, id));
-			/*for(let i = 0; i < this.node.content.length; i++) {
-				a.push(new Graphit(this.obj, this.node.content[i]));
-			}*/
 		}
 		return a;
 	}
