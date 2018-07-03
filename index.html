@@ -9,16 +9,13 @@
 	<script type="module">
 		import Graphit from './graphit.js';
 
-		let json = null;
-
 		init();
 		
 		function handle(event) {
 			init();
 			var reader = new FileReader();
 			reader.onload = (e) => {
-				
-				json = JSON.parse(e.target.result);
+				let json = JSON.parse(e.target.result);
 				graphit(json);
 			};
 
@@ -27,7 +24,7 @@
 
 		function init() {
 			let input = document.createElement('div');
-			input.innerHTML = '<input id="input" type="file" name="" accept=".json">';
+			input.innerHTML = '<input id="input" type="file" accept=".json">';
 			input = input.firstChild;
 			input.addEventListener('input', handle);
 
@@ -38,13 +35,13 @@
 		function graphit(json) {
 			//Exibe conteúdo de "0" em uma filha de <body>
 			let first = new Graphit(json, '0');
-			document.body.appendChild(ell(first, `<div class="nodo">${first.data}</div>)`));
+			document.body.appendChild(ell(first, `<div>${first.data}</div>)`));
 
 			document.body.addEventListener('click', event => {
 				if(event.target.classList.contains('expansivel')) {
 					event.target.classList.remove('expansivel');
 					event.target.classList.add('expandido');
-					expand(event.target);
+					expand(event.target, json);
 				}
 				event.stopPropagation();
 			});
@@ -57,17 +54,18 @@
 			e = e.firstChild;
 			e.setAttribute('data-nodo', node.id);
 
+			e.classList.add('nodo');
 			if(node.hasEdges() || node.hasContent()) e.classList.add('expansivel');
 
 			return e;
 		}
 
-		function expand(element) {
+		function expand(element, json) {
 			let n = new Graphit(json, element.getAttribute('data-nodo'));
 
 			//Exibição das referências
 			for(let neighbor of n.neighborhood) {
-				let content = '<div class="nodo referencia">'
+				let content = '<div class="referencia">'
 							  +	`${neighbor.edge_text}: ${neighbor.node.data}`
 							  + '</div>';
 				element.appendChild(ell(neighbor.node, content));
@@ -75,7 +73,7 @@
 
 			//Exibição do conteúdo
 			for (let child of n.children){
-				element.appendChild(ell(child, `<div class="nodo">${child.data}</div>`));
+				element.appendChild(ell(child, `<div>${child.data}</div>`));
 			}
 		}
 	</script>
