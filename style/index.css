@@ -1,6 +1,9 @@
 * {
 	font-family: "Calibri";	
 }
+button {
+	margin-left: 16px;
+}
 .nodo {
 	border-left: solid;
 	border-left-width: 1px;

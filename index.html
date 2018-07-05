@@ -12,24 +12,31 @@
 		init();
 		
 		function handle(event) {
-			init();
 			var reader = new FileReader();
 			reader.onload = (e) => {
 				let json = JSON.parse(e.target.result);
+				init(json);
 				graphit(json);
 			};
 
 			reader.readAsText(event.target.files[0]);
 		}
 
-		function init() {
-			let input = document.createElement('div');
-			input.innerHTML = '<input id="input" type="file" accept=".json">';
-			input = input.firstChild;
+		function init(json = null) {
+			let div = document.createElement('div');
+			
+			div.innerHTML = '<input id="input" type="file" accept=".json">';
+			let input = div.firstChild;
 			input.addEventListener('input', handle);
 
+			let button = document.createElement('button');
+			button.innerHTML = '💾 salvar';
+			button.addEventListener('click', () => {save(json);});
+
+			div.appendChild(button);
+
 			document.body.innerHTML = '';
-			document.body.appendChild(input);
+			document.body.appendChild(div);
 		};
 
 		function graphit(json) {
@@ -75,6 +82,11 @@
 			for (let child of n.children){
 				element.appendChild(ell(child, `<div>${child.data}</div>`));
 			}
+		}
+
+		function save(json) {
+			let uriContent = 'data:application/octet-stream,' + encodeURIComponent(JSON.stringify(json));
+			window.open(uriContent, 'novoDocumento');
 		}
 	</script>
 </body>
