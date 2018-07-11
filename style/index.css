@@ -26,3 +26,7 @@ button {
 	content: '▾';
 	margin-left: -13px;
 }
+[contenteditable=true] {
+	background: aliceblue;	
+}
+;

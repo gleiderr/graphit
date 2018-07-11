@@ -33,11 +33,16 @@ import Graphit from './graphit.js';
 		function graphit(json) {
 			//Exibe conteúdo de "0" em uma filha de <body>
 			let first = new Graphit(json, '0');
-			document.body.appendChild(ell(first, `<div>${first.data}</div>)`));
+			document.body.appendChild(nodeElement(first));
 
-			//Expansão de elemento
-			document.body.addEventListener('click', event => {
-				if(event.target.classList.contains('expansivel')) {
+			document.addEventListener('click', event => {
+				if(event.ctrlKey) { //Edição de elemento
+					event.target.addEventListener('blur', blur);
+
+					event.target.setAttribute('contenteditable', true);
+					event.target.focus();
+
+				} else if(event.target.classList.contains('expansivel')) { //Expansão de elemento
 					event.target.classList.remove('expansivel');
 					event.target.classList.add('expandido');
 					expand(event.target, json);
@@ -45,11 +50,19 @@ import Graphit from './graphit.js';
 				event.stopPropagation();
 			});
 
-			//Edição de elemento
-			document.body.addEventListener('dblclick', event => {
-				event.target.setAttribute('contenteditable', true);
-			});
-		}		
+			
+			function blur(event) {
+				event.target.removeEventListener('blur', blur);
+				event.target.removeAttribute('contenteditable');
+
+				let node = new Graphit(json, event.target.getAttribute('data-nodo'));
+				node.data = event.target.firstChild.wholeText;
+
+				propagate(node);
+			}
+		}
+
+		const nodeElement = node => ell(node, `<div>${node.data}</div>`);
 
 		function ell(node, content) {
 			let e = document.createElement('div');
@@ -72,14 +85,23 @@ import Graphit from './graphit.js';
 			//Exibição das referências
 			for(let neighbor of n.neighborhood) {
 				let content = '<div class="referencia">'
-							  +	`${neighbor.edge_text}: ${neighbor.node.data}`
+							  +	`${neighbor.edge_text}: ${nodeElement(neighbor.node).outerHTML}`
 							  + '</div>';
 				element.appendChild(ell(neighbor.node, content));
 			}
 
 			//Exibição do conteúdo
 			for (let child of n.children){
-				element.appendChild(ell(child, `<div>${child.data}</div>`));
+				element.appendChild(nodeElement(child));
+			}
+		}
+
+		function propagate(node) {
+			let elements = Array.from(document.querySelectorAll('[data-nodo="' + node.id + '"]'));
+			for (const element of elements) {
+				//document.body.replaceChild(nodeElement(node), element);
+				console.log(element.outerHTML);
+				element.outerHTML = nodeElement(node).outerHTML;
 			}
 		}
 

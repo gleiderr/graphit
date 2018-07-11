@@ -30,6 +30,10 @@ export default class Graphit {
 		return this.node.data;
 	}
 
+	set data(data) {
+		this.node.data = data;
+	}
+
 	hasContent() {
 		return Boolean(this.node.content && this.node.content.length);
 	}
