@@ -2,17 +2,6 @@ import Graphit from './graphit.js';
 
 init();
 
-function handle(event) {
-	var reader = new FileReader();
-	reader.onload = (e) => {
-		let json = JSON.parse(e.target.result);
-		init(json);
-		graphit(json);
-	};
-
-	reader.readAsText(event.target.files[0]);
-}
-
 function init(json = null) {
 	let div = document.createElement('div');
 	
@@ -30,10 +19,54 @@ function init(json = null) {
 	document.body.appendChild(div);
 };
 
+function handle(event) {
+	var reader = new FileReader();
+	reader.onload = (e) => {
+		let json = JSON.parse(e.target.result);
+		init(json);
+		graphit(json);
+	};
+
+	reader.readAsText(event.target.files[0]);
+}
+
+const nodoElement = node => {
+	const nodo = document.createElement('div');
+	nodo.classList.add('Nodo');
+
+	nodo.innerText = node.data;
+	nodo.setAttribute('data-nodo', node.id);
+	nodo.setAttribute('contenteditable', false);
+	if(node.hasEdges() || node.hasContent()) nodo.classList.add('Expansível');
+
+	return nodo;
+}
+
+const contêinerElement = node => {
+	const container = document.createElement('div');
+	container.classList.add('Contêiner');
+	container.appendChild(nodoElement(node));
+
+	return container;
+}
+
+const refElement = edge => {
+	const aresta = document.createElement('div');
+	aresta.classList.add('Aresta');
+	aresta.innerHTML = edge.edge_text;
+
+	const ref = document.createElement('div');
+	ref.classList.add('Referência');
+	ref.appendChild(aresta);
+
+	ref.appendChild(contêinerElement(edge.node));
+	return ref;
+}
+ 
 function graphit(json) {
 	//Exibe conteúdo de "0" em uma filha de <body>
 	let first = new Graphit(json, '0');
-	document.body.appendChild(nodeElement(first));
+	document.body.appendChild(contêinerElement(first));
 
 	document.addEventListener('click', event => {
 		if(event.ctrlKey) { //Edição de elemento
@@ -42,10 +75,10 @@ function graphit(json) {
 			event.target.setAttribute('contenteditable', true);
 			event.target.focus();
 
-		} else if(event.target.classList.contains('expansivel')) { //Expansão de elemento
-			event.target.classList.remove('expansivel');
-			event.target.classList.add('expandido');
-			expand(event.target, json);
+		} else if(event.target.classList.contains('Expansível')) { //Expansão de elemento
+			event.target.classList.remove('Expansível');
+			event.target.classList.add('Expandido');
+			expand(event.target.parentNode, json);
 		}
 		event.stopPropagation();
 	});
@@ -58,50 +91,27 @@ function graphit(json) {
 		let node = new Graphit(json, event.target.getAttribute('data-nodo'));
 		node.data = event.target.firstChild.wholeText;
 
-		//propagate(node);
+		propagate(node, event.target);
 	}
 }
 
-const nodeElement = node => ell(node, `<div>${node.data}</div>`);
-
-function ell(node, content) {
-	let e = document.createElement('div');
-	e.innerHTML = content;
-
-	e = e.firstChild;
-	e.setAttribute('data-nodo', node.id);
-
-	e.classList.add('nodo');
-	if(node.hasEdges() || node.hasContent()) e.classList.add('expansivel');
-
-	e.setAttribute('contenteditable', false);
-
-	return e;
-}
-
-function expand(element, json) {
-	let n = new Graphit(json, element.getAttribute('data-nodo'));
+function expand(container, json) {
+	let n = new Graphit(json, container.firstChild.getAttribute('data-nodo'));
 
 	//Exibição das referências
-	for(let neighbor of n.neighborhood) {
-		let content = '<div class="referencia">'
-					  +	`${neighbor.edge_text}: ${nodeElement(neighbor.node).outerHTML}`
-					  + '</div>';
-		element.appendChild(ell(neighbor.node, content));
-	}
+	for(let neighbor of n.neighborhood) container.appendChild(refElement(neighbor));
 
 	//Exibição do conteúdo
-	for (let child of n.children){
-		element.appendChild(nodeElement(child));
-	}
+	for (let child of n.children) container.appendChild(contêinerElement(child));
 }
 
-function propagate(node) {
+function propagate(node, origem) {
 	let elements = Array.from(document.querySelectorAll('[data-nodo="' + node.id + '"]'));
 	for (const element of elements) {
-		//document.body.replaceChild(nodeElement(node), element);
-		console.log(element.outerHTML);
-		element.outerHTML = nodeElement(node).outerHTML;
+		if (element != origem) {
+			let parent = element.parentNode;
+			parent.replaceChild(nodoElement(node), element);
+		}
 	}
 }
 

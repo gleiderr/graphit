@@ -1,32 +1,68 @@
-* {
+body {
 	font-family: "Calibri";	
 }
 button {
 	margin-left: 16px;
 }
-.nodo {
-	border-left: solid;
-	border-left-width: 1px;
-	border-left-style: dotted;
-	padding-left: 13px;
-}
-.referencia {
-	border-left-color: cornflowerblue;
-	font-size: small;
-	background: aliceblue;
-}
-.expansivel {
+.Expansível {
 	cursor: pointer;
 }
-.expansivel::before {
+.Expansível::before {
 	content: '▸';
-	margin-left: -13px;
+	margin-left: -1em;
 }
-.expandido::before {
+.Expandido::before {
 	content: '▾';
-	margin-left: -13px;
+	margin-left: -1em;
+}
+.Contêiner {
+  border-left-width: 1px;
+  border-left-style: dotted;
+  padding-left: 1em;
+}
+.Referência {
+  margin-left: 3em;
+  border-left: solid;
+  border-left-width: 1px;
+  border-left-color: cornflowerblue;
+  font-size: small;
+  background: aliceblue;
+}
+.Aresta {
+  display: inline-block;
+  padding-right: .5em;
+  padding-left: .5em; 
+  vertical-align: top;
+  font-weight: bold;
+}
+.Aresta::after {
+  content: ':';
+}
+.Referência > .Contêiner {
+  display: inline-block;
 }
 [contenteditable=true] {
 	background: aliceblue;	
 }
-;
+
+/*+-Contêiner[+]-------------------------------+
+  |                                            |
+  | +-Nodo[1]--------------------------------+ |
+  | |                                        | |
+  | +----------------------------------------+ |
+  |                                            |
+  |    +-Referência[*]-----------------------+ |
+  |    |                                     | |
+  |    | +-Aresta[1]---+  +-Contêiner[1]---+ | |
+  |    | |             |  |                | | |
+  |    | +-------------+  +----------------+ | |
+  |    |                                     | |
+  |    +-------------------------------------+ |
+  |                                            |
+  |    +-Contêiner[*]------------------------+ |
+  |    |                                     | |
+  |    +-------------------------------------+ |
+  |                                            |
+  +--------------------------------------------+*/
+
+568782
