@@ -1,4 +1,4 @@
-import Graphit from './graphit.js';
+import * as graphit from './graphit.js';
 
 init();
 
@@ -24,7 +24,7 @@ function handle(event) {
 	reader.onload = (e) => {
 		let json = JSON.parse(e.target.result);
 		init(json);
-		graphit(json);
+		open(json);
 	};
 
 	reader.readAsText(event.target.files[0]);
@@ -36,7 +36,6 @@ const nodoElement = node => {
 
 	nodo.innerText = node.data;
 	nodo.setAttribute('data-nodo', node.id);
-	nodo.setAttribute('contenteditable', false);
 	if(node.hasEdges() || node.hasContent()) nodo.classList.add('Expansível');
 
 	return nodo;
@@ -53,53 +52,60 @@ const contêinerElement = node => {
 const refElement = edge => {
 	const aresta = document.createElement('div');
 	aresta.classList.add('Aresta');
-	aresta.innerHTML = edge.edge_text;
+	aresta.setAttribute('data-from', edge.from.id);
+	aresta.setAttribute('data-idx', edge.idx);
+	aresta.innerHTML = edge.data;
 
 	const ref = document.createElement('div');
 	ref.classList.add('Referência');
 	ref.appendChild(aresta);
 
-	ref.appendChild(contêinerElement(edge.node));
+	ref.appendChild(contêinerElement(edge.to));
 	return ref;
 }
  
-function graphit(json) {
+function open(json) {
 	//Exibe conteúdo de "0" em uma filha de <body>
-	let first = new Graphit(json, '0');
+	let first = new graphit.Node('0', json);
 	document.body.appendChild(contêinerElement(first));
 
 	document.addEventListener('click', event => {
-		if(event.ctrlKey) { //Edição de elemento
-			event.target.addEventListener('blur', blur);
-
-			event.target.setAttribute('contenteditable', true);
-			event.target.focus();
-
-		} else if(event.target.classList.contains('Expansível')) { //Expansão de elemento
-			event.target.classList.remove('Expansível');
-			event.target.classList.add('Expandido');
-			expand(event.target.parentNode, json);
+		const target = event.target;
+		if(event.ctrlKey && (target.classList.contains('Nodo') || target.classList.contains('Aresta'))) { //Edição de elemento
+			target.addEventListener('blur', blur);
+			target.setAttribute('contenteditable', true);
+			target.focus();
+		} else if(target.classList.contains('Expansível')) { //Expansão de elemento
+			target.classList.remove('Expansível');
+			target.classList.add('Expandido');
+			expand(target.parentNode, json);
 		}
 		event.stopPropagation();
 	});
-
 	
 	function blur(event) {
-		event.target.removeEventListener('blur', blur);
-		event.target.removeAttribute('contenteditable');
+		const target = event.target;
+		target.removeEventListener('blur', blur);
+		target.removeAttribute('contenteditable');
 
-		let node = new Graphit(json, event.target.getAttribute('data-nodo'));
-		node.data = event.target.firstChild.wholeText;
-
-		propagate(node, event.target);
+		if(target.classList.contains('Nodo')) {
+			let node = new graphit.Node(target.getAttribute('data-nodo'), json);
+			node.data = target.innerHTML;
+			propagate(node, target);
+		} else if(target.classList.contains('Aresta')) {
+			const from = target.getAttribute('data-from');
+			const idx = target.getAttribute('data-idx');
+			const edge = new graphit.Edge(from, idx, json);
+			edge.data = target.innerHTML;
+		}
 	}
 }
 
 function expand(container, json) {
-	let n = new Graphit(json, container.firstChild.getAttribute('data-nodo'));
+	let n = new graphit.Node(container.firstChild.getAttribute('data-nodo'), json);
 
 	//Exibição das referências
-	for(let neighbor of n.neighborhood) container.appendChild(refElement(neighbor));
+	for(let edge of n.edges) container.appendChild(refElement(edge));
 
 	//Exibição do conteúdo
 	for (let child of n.children) container.appendChild(contêinerElement(child));
@@ -109,8 +115,11 @@ function propagate(node, origem) {
 	let elements = Array.from(document.querySelectorAll('[data-nodo="' + node.id + '"]'));
 	for (const element of elements) {
 		if (element != origem) {
-			let parent = element.parentNode;
-			parent.replaceChild(nodoElement(node), element);
+			const classList = element.classList;
+			const newElement = nodoElement(node);
+			newElement.classList = classList;
+
+			element.parentNode.replaceChild(newElement, element);
 		}
 	}
 }

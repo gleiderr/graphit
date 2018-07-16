@@ -31,7 +31,7 @@ export class Node {
 		const edges = this.node.edges;
 		if (edges) {
 			for (let i = 0; i < edges.length; i++) {
-				es.push(new Edge(this.id, edges[i][1], i, this.obj));
+				es.push(new Edge(this.id, i, this.obj));
 			}
 		}
 		return es;
@@ -55,18 +55,26 @@ export class Node {
 }
 
 export class Edge {
-	constructor(from, to, idx, obj) {
+	constructor(from, idx, obj) {
 		this.orig = from;
-		this.dest = to;
-		this.i = idx;
+		this.idx = idx;
 		this.obj = obj;
 	}
 
 	get data() {
-		return this.obj[this.orig].edges[this.i][0];
+		return this.obj[this.orig].edges[this.idx][0];
+	}
+
+	set data(data) {
+		this.obj[this.orig].edges[this.idx][0] = data;	
 	}
 
 	get from() {
 		return new Node(this.orig, this.obj);
+	}
+
+	get to() {
+		const to = this.obj[this.orig].edges[this.idx][1];
+		return new Node(to, this.obj);
 	}
 }
