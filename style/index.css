@@ -26,7 +26,6 @@ button {
   border-left-width: 1px;
   border-left-color: cornflowerblue;
   font-size: small;
-  background: aliceblue;
 }
 .Aresta {
   display: inline-block;
@@ -34,9 +33,11 @@ button {
   padding-left: .5em; 
   vertical-align: top;
   font-weight: bold;
+  background: aliceblue;
 }
-.Aresta::after {
-  content: ':';
+.Aresta:empty, .Nodo:empty {
+  height: 1.20em;
+  background: aliceblue;
 }
 .Referência > .Contêiner {
   display: inline-block;
