@@ -1,9 +1,15 @@
 body {
-	font-family: "Calibri";	
+	font-family: "Calibri";
+  margin: 0px;
+}
+.Cabeçalho {
+  background-color: aliceblue;
+  padding: 8px;
 }
 button {
 	margin-left: 16px;
 }
+
 .Expansível {
 	cursor: pointer;
 }

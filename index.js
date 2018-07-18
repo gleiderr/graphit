@@ -1,9 +1,22 @@
 import * as graphit from './graphit.js';
 
-init();
+window.addEventListener('load', () => {
+	let xhr = new XMLHttpRequest();
+	xhr.open('GET', './exemplos/bíblia.json');
+	xhr.onreadystatechange = () => {
+		if(xhr.readyState == 4 && xhr.status == 200){
+			let json = JSON.parse(xhr.responseText);
+			iniciarPágina(json);
+		} else {
+			console.log('xhr.readyState: ', xhr.readyState, 'xhr.status: ', xhr.status);
+		}
+	};
+	xhr.send();
+});
 
-function init(json = null) {
+function iniciarPágina(json = null) {
 	let div = document.createElement('div');
+	div.classList.add('Cabeçalho');
 	
 	div.innerHTML = '<input id="input" type="file" accept=".json">';
 	let input = div.firstChild;
@@ -17,14 +30,15 @@ function init(json = null) {
 
 	document.body.innerHTML = '';
 	document.body.appendChild(div);
+	
+	open(json);
 };
 
 function handle(event) {
 	var reader = new FileReader();
 	reader.onload = (e) => {
 		let json = JSON.parse(e.target.result);
-		init(json);
-		open(json);
+		iniciarPágina(json);
 	};
 
 	reader.readAsText(event.target.files[0]);
@@ -125,6 +139,6 @@ function propagate(node, origem) {
 }
 
 function save(json) {
-	let uriContent = 'data:application/octet-stream,' + encodeURIComponent(JSON.stringify(json));
+	let uriContent = 'data:application/octet-stream,' + encodeURIComponent(JSON.stringify(json, null, 4));
 	window.open(uriContent, 'novoDocumento');
 }
