@@ -35,8 +35,11 @@ button {
   font-weight: bold;
   background: aliceblue;
 }
-.Aresta:empty, .Nodo:empty {
-  height: 1.20em;
+.Aresta, .Nodo, .Contêiner {
+  min-height: 1.2em;
+  min-width: 1em;
+}
+.Aresta:empty, .Nodo:empty, .Contêiner:empty {
   background: aliceblue;
 }
 .Referência > .Contêiner {
