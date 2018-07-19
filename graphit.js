@@ -2,7 +2,7 @@ export class Node {
 	constructor (id, obj) {
 		this.id = id;
 		this.obj = obj;
-		this.node = obj[id];
+		this.node = obj[id] || (obj[id] = {});
 	}
 
 	get children() {

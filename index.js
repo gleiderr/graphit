@@ -48,7 +48,7 @@ const nodoElement = node => {
 	const nodo = document.createElement('div');
 	nodo.classList.add('Nodo');
 
-	nodo.innerText = node.data;
+	nodo.innerText = node.data || '';
 	nodo.setAttribute('data-nodo', node.id);
 	if(node.hasEdges() || node.hasContent()) nodo.classList.add('Expansível');
 
