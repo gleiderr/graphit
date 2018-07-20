@@ -1,20 +1,16 @@
 import * as graphit from './graphit.js';
 
 window.addEventListener('load', () => {
-	let xhr = new XMLHttpRequest();
-	xhr.open('GET', './exemplos/bíblia.json');
-	xhr.onreadystatechange = () => {
-		if(xhr.readyState == 4 && xhr.status == 200){
-			let json = JSON.parse(xhr.responseText);
-			iniciarPágina(json);
-		} else {
-			console.log('xhr.readyState: ', xhr.readyState, 'xhr.status: ', xhr.status);
-		}
-	};
-	xhr.send();
+	fetch('./exemplos/bíblia.json').then(response => {
+		return response.json();
+	}).then(iniciarPágina)
+	.catch(ex => {
+		console.error(ex);
+		iniciarPágina();
+	});
 });
 
-function iniciarPágina(json = null) {
+function iniciarPágina(json = {}) {
 	let div = document.createElement('div');
 	div.classList.add('Cabeçalho');
 	
@@ -37,8 +33,13 @@ function iniciarPágina(json = null) {
 function handle(event) {
 	var reader = new FileReader();
 	reader.onload = (e) => {
-		let json = JSON.parse(e.target.result);
-		iniciarPágina(json);
+		try {
+			let json = JSON.parse(e.target.result);
+			iniciarPágina(json);
+		} catch(exception) {
+			console.error(exception);
+			iniciarPágina();
+		}
 	};
 
 	reader.readAsText(event.target.files[0]);
