@@ -1,13 +1,13 @@
 import * as graphit from './graphit.js';
 
 window.addEventListener('load', () => {
-	/*fetch('./exemplos/bíblia.json')
+	fetch('./bíblia/kja.json')
 		.then(response => response.json())
 		.then(iniciarPágina)
-		.catch(ex => {iniciarPágina();});*/
+		.catch(ex => {iniciarPágina();});
 
 	//Script de importação do texto bíblico
-	import_kja();
+	//import_kja();
 });
 
 function iniciarPágina(json = {}) {
