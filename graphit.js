@@ -1,8 +1,9 @@
 export class Node {
-	constructor (id, obj) {
+	constructor (id, obj, data = undefined) {
 		this.id = id;
 		this.obj = obj;
 		this.node = obj[id] || (obj[id] = {});
+		if(data) this.data = data;
 	}
 
 	get children() {
@@ -51,6 +52,16 @@ export class Node {
 
 	hasEdges() {
 		return Boolean(this.node.edges && this.node.edges.length);
+	}
+
+	insert(node) {
+		//[this.node] contains [node]
+		this.node.content = this.node.content || [];
+		this.node.content.push(node.id);
+
+		//[node] is content_of [this.node]
+		this.obj[node.id].content_of = this.obj[node.id].content_of || [];
+		this.obj[node.id].content_of.push(this.id);
 	}
 }
 
