@@ -1,4 +1,4 @@
-import * as graphit from './graphit.js';
+import {Node} from './graphit.js';
 
 window.addEventListener('load', () => {
 	fetch('./bíblia/kja.json')
@@ -88,7 +88,7 @@ const refElement = edge => {
  
 function open(json) {
 	//Exibe conteúdo de "0" em uma filha de <body>
-	let first = new graphit.Node('0', json);
+	let first = new Node('0', json);
 	document.body.appendChild(contêinerElement(first));
 
 	document.addEventListener('click', event => {
@@ -111,7 +111,7 @@ function open(json) {
 		target.removeAttribute('contenteditable');
 
 		if(target.classList.contains('Nodo')) {
-			let node = new graphit.Node(target.getAttribute('data-nodo'), json);
+			let node = new Node(target.getAttribute('data-nodo'), json);
 			node.data = target.innerHTML;
 			propagate(node, target);
 		} else if(target.classList.contains('Aresta')) {
@@ -124,7 +124,7 @@ function open(json) {
 }
 
 function expand(container, json) {
-	let n = new graphit.Node(container.firstChild.getAttribute('data-nodo'), json);
+	let n = new Node(container.firstChild.getAttribute('data-nodo'), json);
 
 	//Exibição das referências
 	for(let edge of n.edges) container.appendChild(refElement(edge));
@@ -167,7 +167,7 @@ function import_kja() {
 			let json = {};
 			let nodoLivro, nodoCapítulo;
 			let livro, capítulo;
-			let nodoBiblia = new graphit.Node('0', json, 'Bíblia King James Atualizada');
+			let nodoBiblia = new Node('0', json, 'Bíblia King James Atualizada');
 
 			let lines = text.match(/.+/gi);
 			let i = 0;
@@ -175,19 +175,19 @@ function import_kja() {
 				let match = line.match(/(.+?)\s+(\d+):(\d+)\s+(.+)/i);
 				if(livro != match[1]) {
 					livro = match[1];
-					nodoLivro = new graphit.Node(newId(), json, livro);
+					nodoLivro = new Node(newId(), json, livro);
 					
 					capítulo = match[2];
-					nodoCapítulo = new graphit.Node(newId(), json, 'Capítulo ' + capítulo);
+					nodoCapítulo = new Node(newId(), json, 'Capítulo ' + capítulo);
 					nodoLivro.insert(nodoCapítulo);
 
 					nodoBiblia.insert(nodoLivro)
 				} else if (capítulo != match[2]) {
 					capítulo = match[2];
-					nodoCapítulo = new graphit.Node(newId(), json, 'Capítulo ' + capítulo);
+					nodoCapítulo = new Node(newId(), json, 'Capítulo ' + capítulo);
 					nodoLivro.insert(nodoCapítulo);
 				}
-				nodoCapítulo.insert(new graphit.Node(newId(), json, match[3] + '. ' + match[4])); //Versículo
+				nodoCapítulo.insert(new Node(newId(), json, match[3] + '. ' + match[4])); //Versículo
 				
 				//console.log(match);
 				//if(i++ == 30000) break;
