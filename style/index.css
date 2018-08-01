@@ -17,13 +17,23 @@ body > .Contêiner {
 .Expansível {
 	cursor: pointer;
 }
-.Expansível::before {
+.Conjunto.Expansível::before {
 	content: '▸';
 	margin-left: -1em;
 }
-.Expandido::before {
+.Conjunto.Expandido::before {
 	content: '▾';
 	margin-left: -1em;
+}
+.Comentado.Expansível::after {
+  content: '✽';
+  font-size: xx-small;
+  vertical-align: super;
+}
+.Comentado.Expandido::after {
+  content: '✽';
+  font-size: xx-small;
+  vertical-align: super;
 }
 .Contêiner {
   border-left-width: 1px;
