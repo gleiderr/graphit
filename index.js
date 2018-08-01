@@ -1,10 +1,16 @@
-import {Node} from './graphit.js';
+import {Node, Edge} from './graphit.js';
 
 window.addEventListener('load', () => {
 	fetch('./bíblia/kja.json')
 		.then(response => response.json())
 		.then(iniciarPágina)
-		.catch(ex => {iniciarPágina();});
+		.catch(ex => {
+			console.error(ex);
+			iniciarPágina();
+		});
+
+	//Eventos
+
 
 	//Script de importação do texto bíblico
 	//import_kja();
@@ -24,7 +30,7 @@ function iniciarPágina(json = {}) {
 
 	div.appendChild(button);
 
-	document.body.innerHTML = '';
+	document.body = document.createElement('body');
 	document.body.appendChild(div);
 	
 	open(json);
@@ -58,7 +64,8 @@ const nodoElement = node => {
 
 	nodo.innerText = node.data || '';
 	nodo.setAttribute('data-nodo', node.id);
-	if(node.hasEdges() || node.hasContent()) nodo.classList.add('Expansível');
+	if(node.nContent > 0) nodo.classList.add('Conjunto', 'Expansível');
+	if(node.nEdges > 0) nodo.classList.add('Comentado', 'Expansível');
 
 	return nodo;
 }
@@ -91,13 +98,19 @@ function open(json) {
 	let first = new Node('0', json);
 	document.body.appendChild(contêinerElement(first));
 
-	document.addEventListener('click', event => {
+	document.body.addEventListener('click', event => {
 		const target = event.target;
 		if(event.ctrlKey && (target.classList.contains('Nodo') || target.classList.contains('Aresta'))) { //Edição de elemento
 			target.addEventListener('blur', blur);
 			target.setAttribute('contenteditable', true);
 			target.focus();
-		} else if(target.classList.contains('Expansível')) { //Expansão de elemento
+		}
+		event.stopPropagation();
+	});
+
+	document.body.addEventListener('dblclick', event => {
+		const target = event.target;
+		if(target.classList.contains('Expansível')) { //Expansão de elemento
 			target.classList.remove('Expansível');
 			target.classList.add('Expandido');
 			expand(target.parentNode, json);
@@ -117,7 +130,7 @@ function open(json) {
 		} else if(target.classList.contains('Aresta')) {
 			const from = target.getAttribute('data-from');
 			const idx = target.getAttribute('data-idx');
-			const edge = new graphit.Edge(from, idx, json);
+			const edge = new Edge(from, idx, json);
 			edge.data = target.innerHTML;
 		}
 	}
