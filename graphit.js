@@ -46,12 +46,12 @@ export class Node {
 		this.node.data = data;
 	}
 
-	hasContent() {
-		return Boolean(this.node.content && this.node.content.length);
+	get nContent() {
+		return (this.node.content && this.node.content.length) || 0;
 	}
 
-	hasEdges() {
-		return Boolean(this.node.edges && this.node.edges.length);
+	get nEdges() {
+		return (this.node.edges && this.node.edges.length) || 0;
 	}
 
 	insert(node) {
