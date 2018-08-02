@@ -6,38 +6,6 @@ export class Node {
 		if(data) this.data = data;
 	}
 
-	get children() {
-		let a = [];
-		if(this.node.content) {
-			for(const id of this.node.content)
-				a.push(new Node(id, this.obj));
-		}
-		return a;
-	}
-
-	get neighborhood() {
-		let es = [];
-		if (this.node.edges){
-			for (let edge of this.node.edges) {
-				let edge_text = edge[0];
-				let node = new Node(edge[1], this.obj);
-				es.push({edge_text, node});
-			}
-		}
-		return es;
-	}
-
-	get edges() {
-		let es = [];
-		const edges = this.node.edges;
-		if (edges) {
-			for (let i = 0; i < edges.length; i++) {
-				es.push(new Edge(this.id, i, this.obj));
-			}
-		}
-		return es;
-	}
-
 	get data() {
 		return this.node.data;
 	}
@@ -50,8 +18,8 @@ export class Node {
 		return (this.node.content && this.node.content.length) || 0;
 	}
 
-	get nEdges() {
-		return (this.node.edges && this.node.edges.length) || 0;
+	child(idx) {
+		return idx >= 0 && idx < this.nContent ? new Node(this.node.content[idx], this.obj) : null;
 	}
 
 	insert(node) {
@@ -63,29 +31,19 @@ export class Node {
 		this.obj[node.id].content_of = this.obj[node.id].content_of || [];
 		this.obj[node.id].content_of.push(this.id);
 	}
-}
 
-export class Edge {
-	constructor(from, idx, obj) {
-		this.orig = from;
-		this.idx = idx;
-		this.obj = obj;
+	get nEdges() {
+		return (this.node.edges && this.node.edges.length) || 0;
 	}
 
-	get data() {
-		return this.obj[this.orig].edges[this.idx][0];
+	edgeData(idx, data = undefined) {
+		if(data !== undefined) this.node.edges[idx][0] = data;
+		return this.node.edges[idx][0];
 	}
 
-	set data(data) {
-		this.obj[this.orig].edges[this.idx][0] = data;	
+	edgeTo(idx, to = undefined) {
+		if(to !== undefined) this.node.edges[idx][1] = to;
+		return new Node(this.node.edges[idx][1], this.obj);
 	}
 
-	get from() {
-		return new Node(this.orig, this.obj);
-	}
-
-	get to() {
-		const to = this.obj[this.orig].edges[this.idx][1];
-		return new Node(to, this.obj);
-	}
 }

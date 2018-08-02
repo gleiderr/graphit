@@ -1,4 +1,4 @@
-import {Node, Edge} from './graphit.js';
+import {Node} from './graphit.js';
 
 window.addEventListener('load', () => {
 	fetch('./bíblia/kja.json')
@@ -8,9 +8,6 @@ window.addEventListener('load', () => {
 			console.error(ex);
 			iniciarPágina();
 		});
-
-	//Eventos
-
 
 	//Script de importação do texto bíblico
 	//import_kja();
@@ -78,18 +75,18 @@ const contêinerElement = node => {
 	return container;
 }
 
-const refElement = edge => {
+const refElement = (idx, from) => {
 	const aresta = document.createElement('div');
 	aresta.classList.add('Aresta');
-	aresta.setAttribute('data-from', edge.from.id);
-	aresta.setAttribute('data-idx', edge.idx);
-	aresta.innerHTML = edge.data;
+	aresta.setAttribute('data-from', from.id);
+	aresta.setAttribute('data-idx', idx);
+	aresta.innerHTML = from.edgeData(idx);
 
 	const ref = document.createElement('div');
 	ref.classList.add('Referência');
 	ref.appendChild(aresta);
 
-	ref.appendChild(contêinerElement(edge.to));
+	ref.appendChild(contêinerElement(from.edgeTo(idx)));
 	return ref;
 }
  
@@ -126,12 +123,12 @@ function open(json) {
 		if(target.classList.contains('Nodo')) {
 			let node = new Node(target.getAttribute('data-nodo'), json);
 			node.data = target.innerHTML;
-			propagate(node, target);
+			propagate(`[data-nodo="${node.id}"]`, target);
 		} else if(target.classList.contains('Aresta')) {
-			const from = target.getAttribute('data-from');
+			const from = new Node(target.getAttribute('data-from'), json);
 			const idx = target.getAttribute('data-idx');
-			const edge = new Edge(from, idx, json);
-			edge.data = target.innerHTML;
+			from.edgeData(idx, target.innerHTML);
+			propagate(`[data-from="${from.id}"][data-idx="${idx}"]`, target)
 		}
 	}
 }
@@ -140,18 +137,18 @@ function expand(container, json) {
 	let n = new Node(container.firstChild.getAttribute('data-nodo'), json);
 
 	//Exibição das referências
-	for(let edge of n.edges) container.appendChild(refElement(edge));
+	for(let idx = 0; idx < n.nEdges; idx++) container.appendChild(refElement(idx, n));
 
 	//Exibição do conteúdo
-	for (let child of n.children) container.appendChild(contêinerElement(child));
+	for(let idx = 0; idx < n.nContent; idx++) container.appendChild(contêinerElement(n.child(idx)));
 }
 
-function propagate(node, origem) {
-	let elements = Array.from(document.querySelectorAll('[data-nodo="' + node.id + '"]'));
+function propagate(selector, origem) {
+	let elements = Array.from(document.querySelectorAll(selector));
 	for (const element of elements) {
 		if (element != origem) {
 			const classList = element.classList;
-			const newElement = nodoElement(node);
+			const newElement = origem.cloneNode(true);
 			newElement.classList = classList;
 
 			element.parentNode.replaceChild(newElement, element);
