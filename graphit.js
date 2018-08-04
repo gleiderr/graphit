@@ -36,13 +36,23 @@ export class Node {
 		return (this.node.edges && this.node.edges.length) || 0;
 	}
 
-	edgeData(idx, data = undefined) {
-		if(data !== undefined) this.node.edges[idx][0] = data;
+	edgeData(idx, data = undefined) { 
+		if(data !== undefined) {
+			this.node.edges = this.node.edges || [];
+			this.node.edges[idx] = this.node.edges[idx] || [];
+			
+			this.node.edges[idx][0] = data;
+		}
 		return this.node.edges[idx][0];
 	}
 
 	edgeTo(idx, to = undefined) {
-		if(to !== undefined) this.node.edges[idx][1] = to;
+		if(to !== undefined) {
+			this.node.edges = this.node.edges || [];
+			this.node.edges[idx] = this.node.edges[idx] || [];
+
+			this.node.edges[idx][1] = to.id;
+		}
 		return new Node(this.node.edges[idx][1], this.obj);
 	}
 
