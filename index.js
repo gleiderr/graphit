@@ -55,22 +55,40 @@ function* keyGen(init = 0, next = Date.now) {
 	}
 }
 
+const classificação = (node, element) => {
+	let c = [];
+	if(node.nContent > 0) c.push('Conjunto');
+	if(node.nEdges > 0) c.push('Comentado');
+
+	if((node.nContent > 0 || node.nEdges > 0) && !element.classList.contains('Expandido')) {
+		c.push('Expansível');
+	}
+	return c;
+};
+
 const nodoElement = node => {
-	const nodo = document.createElement('div');
-	nodo.classList.add('Nodo');
+	const element = document.createElement('div');
+	element.classList.add('Nodo');
 
-	nodo.innerText = node.data || '';
-	nodo.setAttribute('data-nodo', node.id);
-	if(node.nContent > 0) nodo.classList.add('Conjunto', 'Expansível');
-	if(node.nEdges > 0) nodo.classList.add('Comentado', 'Expansível');
+	element.innerText = node.data || '';
+	element.setAttribute('data-nodo', node.id);
+	element.classList.add(...classificação(node, element));
 
-	return nodo;
+	return element;
 }
 
 const contêinerElement = node => {
 	const container = document.createElement('div');
 	container.classList.add('Contêiner');
 	container.appendChild(nodoElement(node));
+
+	const referencias = document.createElement('div');
+	referencias.classList.add('Referências');
+	container.appendChild(referencias);
+
+	const conteúdo = document.createElement('div');
+	conteúdo.classList.add('Conteúdo');
+	container.appendChild(conteúdo);
 
 	return container;
 }
@@ -89,6 +107,10 @@ const refElement = (idx, from) => {
 	ref.appendChild(contêinerElement(from.edgeTo(idx)));
 	return ref;
 }
+
+const nodoFromElement = (element, json) => {
+	return new Node(element.getAttribute('data-nodo'), json);
+};
  
 function open(json) {
 	//Exibe conteúdo de "0" em uma filha de <body>
@@ -102,17 +124,27 @@ function open(json) {
 			target.setAttribute('contenteditable', true);
 			target.focus();
 		}
+
+		if(document.body.getAttribute('data-selecting') == 'true') {
+			associar(event);
+		}
 		event.stopPropagation();
 	});
 
 	document.body.addEventListener('dblclick', event => {
 		const target = event.target;
 		if(target.classList.contains('Expansível')) { //Expansão de elemento
-			target.classList.remove('Expansível');
-			target.classList.add('Expandido');
+			
 			expand(target.parentNode, json);
 		}
 		event.stopPropagation();
+	});
+
+	window.addEventListener('keydown', event => {
+		console.log(event.key);
+		if(event.key == '*' && event.ctrlKey) {
+			document.body.setAttribute('data-selecting', 'true');
+		}
 	});
 	
 	function blur(event) {
@@ -120,38 +152,82 @@ function open(json) {
 		target.removeEventListener('blur', blur);
 		target.removeAttribute('contenteditable');
 
-		if(target.classList.contains('Nodo')) {
+		if(target.classList.contains('Nodo')) { 
 			let node = new Node(target.getAttribute('data-nodo'), json);
 			node.data = target.innerHTML;
-			propagate(`[data-nodo="${node.id}"]`, target);
+			propagate(`[data-nodo="${node.id}"]`, target, json);
 		} else if(target.classList.contains('Aresta')) {
 			const from = new Node(target.getAttribute('data-from'), json);
 			const idx = target.getAttribute('data-idx');
 			from.edgeData(idx, target.innerHTML);
-			propagate(`[data-from="${from.id}"][data-idx="${idx}"]`, target)
+			propagate(`[data-from="${from.id}"][data-idx="${idx}"]`, target, json);
 		}
+	}
+	
+	let targetFrom;
+	function associar(event) {
+		if(!targetFrom) {
+			targetFrom = event.target;
+			return;
+		}
+	
+		document.body.setAttribute('data-selecting', 'false');
+
+		let from = nodoFromElement(targetFrom, json);
+		let idx = from.nEdges;
+
+		from.edgeTo(idx, nodoFromElement(event.target, json));
+		from.edgeData(idx, '');
+
+		targetFrom.classList.add(...classificação(from, targetFrom));
+		if(targetFrom.classList.contains('Expandido')) {
+			appendRef(targetFrom.parentElement, idx, from);
+			//targetFrom.parentElement.appendChild(refElement(idx, from));
+		}
+		
+		propagate(`[data-nodo="${from.id}"]`, targetFrom, json);
+
+		targetFrom = undefined;
 	}
 }
 
+const appendRef = (container, idx, n) => {
+	const referências_el = container.firstChild.nextElementSibling;
+	referências_el.appendChild(refElement(idx, n)); 
+};
+const appendContent = (container, idx, n) => {
+	const conteúdo_el = container.firstChild.nextElementSibling.nextElementSibling;
+	conteúdo_el.appendChild(contêinerElement(n.child(idx))); 
+};
+
 function expand(container, json) {
-	let n = new Node(container.firstChild.getAttribute('data-nodo'), json);
+	const nodo_el = container.firstChild;
+	const referências_el = nodo_el.nextElementSibling;
+	const conteúdo_el = referências_el.nextElementSibling;
+	const n = new Node(nodo_el.getAttribute('data-nodo'), json);
 
 	//Exibição das referências
-	for(let idx = 0; idx < n.nEdges; idx++) container.appendChild(refElement(idx, n));
+	for(let idx = 0; idx < n.nEdges; idx++) appendRef(container, idx, n);
 
 	//Exibição do conteúdo
-	for(let idx = 0; idx < n.nContent; idx++) container.appendChild(contêinerElement(n.child(idx)));
+	for(let idx = 0; idx < n.nContent; idx++) appendContent(container, idx, n);
+
+	nodo_el.classList.remove('Expansível');
+	nodo_el.classList.add('Expandido');
 }
 
-function propagate(selector, origem) {
+function propagate(selector, origem, json) {
 	let elements = Array.from(document.querySelectorAll(selector));
 	for (const element of elements) {
 		if (element != origem) {
-			const classList = element.classList;
-			const newElement = origem.cloneNode(true);
-			newElement.classList = classList;
+			element.innerHTML = origem.innerHTML;
+			if(element.hasAttribute('data-nodo'))
+				element.classList.add(...classificação(nodoFromElement(element, json), element));
+			//const classList = element.classList;
+			//const newElement = origem.cloneNode(true);
+			//newElement.classList = classList;
 
-			element.parentNode.replaceChild(newElement, element);
+			//element.parentNode.replaceChild(newElement, element);
 		}
 	}
 }
