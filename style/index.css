@@ -71,6 +71,9 @@ body > .Contêiner {
 [data-selecting=true] .Nodo:hover{
   background-color: darkseagreen;
 }
+[data-adding=true] .Nodo:hover{
+  background-color: darkorange;
+}
 #novo_nodo {
     display: inline;
     margin: 8px;

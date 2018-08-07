@@ -143,8 +143,13 @@ function open(json) {
 		}
 
 		if(document.body.getAttribute('data-selecting') == 'true') {
-			associar(event.target, newId);
+			associar(target, newId);
 		}
+
+		if(document.body.getAttribute('data-adding') == 'true') {
+			inserir(target, newId);
+		}		
+
 		event.stopPropagation();
 	});
 
@@ -165,6 +170,7 @@ function open(json) {
 				break;
 			case '+':
 				if(event.ctrlKey) document.body.setAttribute('data-adding', 'true');
+				event.preventDefault();
 				break;
 		}
 		
@@ -215,6 +221,33 @@ function open(json) {
 		document.body.setAttribute('data-selecting', 'false');
 		targetFrom = undefined;
 	}
+
+	let targetSuperset;
+	function inserir(target, newId) {
+		if(!targetSuperset) {
+			if(target.id != 'novo_nodo') targetSuperset = target;
+			return;
+		}
+
+		if(target.id == 'novo_nodo') {
+			target.setAttribute('data-nodo', newId());
+		}
+	
+		let superset = nodoFromElement(targetSuperset, json);
+		let idx = superset.nEdges;
+
+		superset.insert(nodoFromElement(target, json));
+
+		targetSuperset.classList.add(...classificação(superset, targetSuperset));
+		if(targetSuperset.classList.contains('Expandido')) {
+			appendContent(targetSuperset.parentElement, superset.nContent - 1, superset);
+		}
+		
+		propagate(`[data-nodo="${superset.id}"]`, targetSuperset, json);
+
+		document.body.setAttribute('data-adding', 'false');
+		targetSuperset = undefined;
+	}
 }
 
 const appendRef = (container, idx, n) => {
@@ -245,7 +278,7 @@ function expand(container, json) {
 function propagate(selector, origem, json) {
 	let elements = Array.from(document.querySelectorAll(selector));
 	for (const element of elements) {
-		if (element != origem) {
+		if (element != origem && element.id != 'novo_nodo') {
 			element.innerHTML = origem.innerHTML;
 			if(element.hasAttribute('data-nodo'))
 				element.classList.add(...classificação(nodoFromElement(element, json), element));
