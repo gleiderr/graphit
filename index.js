@@ -27,6 +27,13 @@ function iniciarPágina(json = {}) {
 
 	div.appendChild(button);
 
+	const novoNodo = document.createElement('div');
+	novoNodo.id	= 'novo_nodo';
+	novoNodo.innerText = 'Novo nodo';
+	novoNodo.classList.add('Nodo');
+	div.appendChild(novoNodo);
+
+
 	document.body = document.createElement('body');
 	document.body.appendChild(div);
 	
@@ -111,11 +118,21 @@ const refElement = (idx, from) => {
 const nodoFromElement = (element, json) => {
 	return new Node(element.getAttribute('data-nodo'), json);
 };
+
+const lastID = json => {
+	let maxId = 0;
+	for (let id in json) if((id = parseInt(id, 36)) > maxId) maxId = id;
+	console.log(maxId);
+	return maxId;
+};
  
 function open(json) {
 	//Exibe conteúdo de "0" em uma filha de <body>
 	let first = new Node('0', json);
 	document.body.appendChild(contêinerElement(first));
+
+	const newIdGenerator = keyGen(lastID(json), () => 0);
+	const newId = () => newIdGenerator.next().value;
 
 	document.body.addEventListener('click', event => {
 		const target = event.target;
@@ -126,7 +143,7 @@ function open(json) {
 		}
 
 		if(document.body.getAttribute('data-selecting') == 'true') {
-			associar(event);
+			associar(event.target, newId);
 		}
 		event.stopPropagation();
 	});
@@ -142,9 +159,15 @@ function open(json) {
 
 	window.addEventListener('keydown', event => {
 		console.log(event.key);
-		if(event.key == '*' && event.ctrlKey) {
-			document.body.setAttribute('data-selecting', 'true');
+		switch (event.key) {
+			case '*':
+				if(event.ctrlKey) document.body.setAttribute('data-selecting', 'true');
+				break;
+			case '+':
+				if(event.ctrlKey) document.body.setAttribute('data-adding', 'true');
+				break;
 		}
+		
 	});
 	
 	function blur(event) {
@@ -165,18 +188,20 @@ function open(json) {
 	}
 	
 	let targetFrom;
-	function associar(event) {
+	function associar(target, newId) {
 		if(!targetFrom) {
-			targetFrom = event.target;
+			if(target.id != 'novo_nodo') targetFrom = target;
 			return;
 		}
-	
-		document.body.setAttribute('data-selecting', 'false');
 
+		if(target.id == 'novo_nodo') {
+			target.setAttribute('data-nodo', newId());
+		}
+	
 		let from = nodoFromElement(targetFrom, json);
 		let idx = from.nEdges;
 
-		from.edgeTo(idx, nodoFromElement(event.target, json));
+		from.edgeTo(idx, nodoFromElement(target, json));
 		from.edgeData(idx, '');
 
 		targetFrom.classList.add(...classificação(from, targetFrom));
@@ -187,6 +212,7 @@ function open(json) {
 		
 		propagate(`[data-nodo="${from.id}"]`, targetFrom, json);
 
+		document.body.setAttribute('data-selecting', 'false');
 		targetFrom = undefined;
 	}
 }
