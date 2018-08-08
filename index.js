@@ -163,7 +163,6 @@ function open(json) {
 	});
 
 	window.addEventListener('keydown', event => {
-		console.log(event.key);
 		switch (event.key) {
 			case '*':
 				if(event.ctrlKey) document.body.setAttribute('data-selecting', 'true');

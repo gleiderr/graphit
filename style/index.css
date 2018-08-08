@@ -5,13 +5,16 @@ body {
 .Cabeçalho {
   background-color: aliceblue;
   padding: 8px;
+  height: 3.8vh;
 }
 button {
 	margin-left: 16px;
 }
 
 body > .Contêiner {
-  margin-top: 8px;
+  padding-top: 8px;
+  overflow-y: auto;
+  max-height: 92.6vh;
 }
 
 .Expansível {
