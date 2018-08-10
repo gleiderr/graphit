@@ -5,7 +5,8 @@ body {
 .Cabeçalho {
   background-color: aliceblue;
   padding: 8px;
-  height: 3.8vh;
+  min-height: 5vh;
+  box-sizing: border-box;
 }
 button {
 	margin-left: 16px;
@@ -14,7 +15,8 @@ button {
 body > .Contêiner {
   padding-top: 8px;
   overflow-y: auto;
-  max-height: 92.6vh;
+  max-height: 93vh;
+  box-sizing: border-box;
 }
 
 .Expansível {
@@ -22,11 +24,11 @@ body > .Contêiner {
 }
 .Conjunto.Expansível::before {
 	content: '▸';
-	margin-left: -1em;
+	margin-left: -.8em;
 }
 .Conjunto.Expandido::before {
 	content: '▾';
-	margin-left: -1em;
+	margin-left: -.8em;
 }
 .Comentado.Expansível::after {
   content: '✽';
@@ -44,7 +46,7 @@ body > .Contêiner {
   padding-left: 1em;
 }
 .Referência {
-  margin-left: 3em;
+  margin-left: 2em;
   border-left: solid;
   border-left-width: 1px;
   border-left-color: cornflowerblue;
