@@ -127,6 +127,9 @@ const lastID = json => {
 };
  
 function open(json) {
+	let targetSuperset;
+	let targetFrom;
+
 	//Exibe conteúdo de "0" em uma filha de <body>
 	let first = new Node('0', json);
 	document.body.appendChild(contêinerElement(first));
@@ -168,8 +171,17 @@ function open(json) {
 				if(event.ctrlKey) document.body.setAttribute('data-selecting', 'true');
 				break;
 			case '+':
-				if(event.ctrlKey) document.body.setAttribute('data-adding', 'true');
-				event.preventDefault();
+				if(event.ctrlKey) {
+					event.preventDefault();
+					document.body.setAttribute('data-adding', 'true');
+				}
+				break;
+			case 'Escape':
+				document.body.setAttribute('data-selecting', 'false');
+				targetFrom = undefined;
+				document.body.setAttribute('data-adding', 'false');
+				targetSuperset = undefined;
+				console.log(event.key);
 				break;
 		}
 		
@@ -192,7 +204,6 @@ function open(json) {
 		}
 	}
 	
-	let targetFrom;
 	function associar(target, newId) {
 		if(!targetFrom) {
 			if(target.id != 'novo_nodo') targetFrom = target;
@@ -221,7 +232,6 @@ function open(json) {
 		targetFrom = undefined;
 	}
 
-	let targetSuperset;
 	function inserir(target, newId) {
 		if(!targetSuperset) {
 			if(target.id != 'novo_nodo') targetSuperset = target;
