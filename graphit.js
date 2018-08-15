@@ -1,9 +1,13 @@
 export class Node {
-	constructor (id, obj, data = undefined) {
+	static set json(json) {
+		console.log('fdsa');
+		Node.prototype.obj = json;
+	}
+
+	constructor (id, obj = undefined) {
 		this.id = id;
-		this.obj = obj;
-		this.node = obj[id] || (obj[id] = {});
-		if(data) this.data = data;
+		this.obj = obj || this.obj;
+		this.node = this.obj[id] || (this.obj[id] = {});
 	}
 
 	get data() {

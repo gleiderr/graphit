@@ -8,12 +8,64 @@ window.addEventListener('load', () => {
 			console.error(ex);
 			iniciarPágina();
 		});
-
-	//Script de importação do texto bíblico
-	//import_kja();
 });
 
+document.addEventListener('click', event => {
+	const target = event.target;
+	if(event.ctrlKey && (target.classList.contains('Nodo') || target.classList.contains('Aresta'))) { //Edição de elemento
+		target.addEventListener('blur', blur);
+		target.setAttribute('contenteditable', true);
+		target.focus();
+	}
+
+	if(document.body.getAttribute('data-selecting') == 'true') {
+		associar(target, newId);
+	}
+
+	if(document.body.getAttribute('data-adding') == 'true') {
+		inserir(target, newId);
+	}		
+
+	event.stopPropagation();
+});
+
+document.addEventListener('dblclick', event => {
+	const target = event.target;
+	if(target.classList.contains('Expansível')) { //Expansão de elemento
+		
+		expand(target.parentNode);
+	}
+	event.stopPropagation();
+});
+
+window.addEventListener('keydown', event => {
+	switch (event.key) {
+		/*case '*':
+			if(event.ctrlKey) document.body.setAttribute('data-selecting', 'true');
+			break;*/
+		case '+':
+			if(event.ctrlKey) {
+				event.preventDefault();
+				document.body.setAttribute('data-adding', 'true');
+			}
+			break;
+		case 'Escape':
+			document.body.setAttribute('data-selecting', 'false');
+			targetFrom = undefined;
+			document.body.setAttribute('data-adding', 'false');
+			targetSuperset = undefined;
+			console.log(event.key);
+			break;
+	}
+	
+});
+
+// ^^^^^^^^^ event_agregator
+// vvvvvvvvv events
+
 function iniciarPágina(json = {}) {
+	Node.json = json;
+
 	let div = document.createElement('div');
 	div.classList.add('Cabeçalho');
 	
@@ -39,6 +91,19 @@ function iniciarPágina(json = {}) {
 	
 	open(json);
 };
+
+function open(json) {
+	let targetSuperset;
+	let targetFrom;
+
+	//Exibe conteúdo de "0" em uma filha de <body>
+	let first = new Node('0');
+	document.body.appendChild(contêinerElement(first));
+
+	const newIdGenerator = keyGen(lastID(json), () => 0);
+	const newId = () => newIdGenerator.next().value;
+
+}
 
 function handle(event) {
 	var reader = new FileReader();
@@ -115,8 +180,8 @@ const refElement = (idx, from) => {
 	return ref;
 }
 
-const nodoFromElement = (element, json) => {
-	return new Node(element.getAttribute('data-nodo'), json);
+const nodoFromElement = (element) => {
+	return new Node(element.getAttribute('data-nodo'));
 };
 
 const lastID = json => {
@@ -125,138 +190,76 @@ const lastID = json => {
 	console.log(maxId);
 	return maxId;
 };
- 
-function open(json) {
-	let targetSuperset;
-	let targetFrom;
 
-	//Exibe conteúdo de "0" em uma filha de <body>
-	let first = new Node('0', json);
-	document.body.appendChild(contêinerElement(first));
+function blur(event) {
+	const target = event.target;
+	target.removeEventListener('blur', blur);
+	target.removeAttribute('contenteditable');
 
-	const newIdGenerator = keyGen(lastID(json), () => 0);
-	const newId = () => newIdGenerator.next().value;
-
-	document.body.addEventListener('click', event => {
-		const target = event.target;
-		if(event.ctrlKey && (target.classList.contains('Nodo') || target.classList.contains('Aresta'))) { //Edição de elemento
-			target.addEventListener('blur', blur);
-			target.setAttribute('contenteditable', true);
-			target.focus();
-		}
-
-		if(document.body.getAttribute('data-selecting') == 'true') {
-			associar(target, newId);
-		}
-
-		if(document.body.getAttribute('data-adding') == 'true') {
-			inserir(target, newId);
-		}		
-
-		event.stopPropagation();
-	});
-
-	document.body.addEventListener('dblclick', event => {
-		const target = event.target;
-		if(target.classList.contains('Expansível')) { //Expansão de elemento
-			
-			expand(target.parentNode, json);
-		}
-		event.stopPropagation();
-	});
-
-	window.addEventListener('keydown', event => {
-		switch (event.key) {
-			case '*':
-				if(event.ctrlKey) document.body.setAttribute('data-selecting', 'true');
-				break;
-			case '+':
-				if(event.ctrlKey) {
-					event.preventDefault();
-					document.body.setAttribute('data-adding', 'true');
-				}
-				break;
-			case 'Escape':
-				document.body.setAttribute('data-selecting', 'false');
-				targetFrom = undefined;
-				document.body.setAttribute('data-adding', 'false');
-				targetSuperset = undefined;
-				console.log(event.key);
-				break;
-		}
-		
-	});
-	
-	function blur(event) {
-		const target = event.target;
-		target.removeEventListener('blur', blur);
-		target.removeAttribute('contenteditable');
-
-		if(target.classList.contains('Nodo')) { 
-			let node = new Node(target.getAttribute('data-nodo'), json);
-			node.data = target.innerHTML;
-			propagate(`[data-nodo="${node.id}"]`, target, json);
-		} else if(target.classList.contains('Aresta')) {
-			const from = new Node(target.getAttribute('data-from'), json);
-			const idx = target.getAttribute('data-idx');
-			from.edgeData(idx, target.innerHTML);
-			propagate(`[data-from="${from.id}"][data-idx="${idx}"]`, target, json);
-		}
+	if(target.classList.contains('Nodo')) { 
+		let node = new Node(target.getAttribute('data-nodo'));
+		node.data = target.innerHTML;
+		propagate(`[data-nodo="${node.id}"]`, target, json);
+	} else if(target.classList.contains('Aresta')) {
+		const from = new Node(target.getAttribute('data-from'));
+		const idx = target.getAttribute('data-idx');
+		from.edgeData(idx, target.innerHTML);
+		propagate(`[data-from="${from.id}"][data-idx="${idx}"]`, target, json);
 	}
-	
-	function associar(target, newId) {
-		if(!targetFrom) {
-			if(target.id != 'novo_nodo') targetFrom = target;
-			return;
-		}
+}
 
-		if(target.id == 'novo_nodo') {
-			target.setAttribute('data-nodo', newId());
-		}
-	
-		let from = nodoFromElement(targetFrom, json);
-		let idx = from.nEdges;
-
-		from.edgeTo(idx, nodoFromElement(target, json));
-		from.edgeData(idx, '');
-
-		targetFrom.classList.add(...classificação(from, targetFrom));
-		if(targetFrom.classList.contains('Expandido')) {
-			appendRef(targetFrom.parentElement, idx, from);
-			//targetFrom.parentElement.appendChild(refElement(idx, from));
-		}
-		
-		propagate(`[data-nodo="${from.id}"]`, targetFrom, json);
-
-		document.body.setAttribute('data-selecting', 'false');
-		targetFrom = undefined;
+function associar(target, newId) {
+	if(!targetFrom) {
+		if(target.id != 'novo_nodo') targetFrom = target;
+		return;
 	}
 
-	function inserir(target, newId) {
-		if(!targetSuperset) {
-			if(target.id != 'novo_nodo') targetSuperset = target;
-			return;
-		}
-
-		if(target.id == 'novo_nodo') {
-			target.setAttribute('data-nodo', newId());
-		}
-	
-		let superset = nodoFromElement(targetSuperset, json);
-		let idx = superset.nEdges;
-
-		superset.insert(nodoFromElement(target, json));
-
-		targetSuperset.classList.add(...classificação(superset, targetSuperset));
-		if(targetSuperset.classList.contains('Expandido')) {
-			appendContent(targetSuperset.parentElement, superset.nContent - 1, superset);
-		}
-		
-		propagate(`[data-nodo="${superset.id}"]`, targetSuperset, json);
-
-		document.body.setAttribute('data-adding', 'false');
-		targetSuperset = undefined;
+	if(target.id == 'novo_nodo') {
+		target.setAttribute('data-nodo', newId());
 	}
+
+	let from = nodoFromElement(targetFrom, json);
+	let idx = from.nEdges;
+
+	from.edgeTo(idx, nodoFromElement(target, json));
+	from.edgeData(idx, '');
+
+	targetFrom.classList.add(...classificação(from, targetFrom));
+	if(targetFrom.classList.contains('Expandido')) {
+		appendRef(targetFrom.parentElement, idx, from);
+		//targetFrom.parentElement.appendChild(refElement(idx, from));
+	}
+	
+	propagate(`[data-nodo="${from.id}"]`, targetFrom, json);
+
+	document.body.setAttribute('data-selecting', 'false');
+	targetFrom = undefined;
+}
+
+function inserir(target, newId) {
+	if(!targetSuperset) {
+		if(target.id != 'novo_nodo') targetSuperset = target;
+		return;
+	}
+
+	if(target.id == 'novo_nodo') {
+		target.setAttribute('data-nodo', newId());
+	}
+
+	let superset = nodoFromElement(targetSuperset, json);
+	let idx = superset.nEdges;
+
+	superset.insert(nodoFromElement(target, json));
+
+	targetSuperset.classList.add(...classificação(superset, targetSuperset));
+	if(targetSuperset.classList.contains('Expandido')) {
+		appendContent(targetSuperset.parentElement, superset.nContent - 1, superset);
+	}
+	
+	propagate(`[data-nodo="${superset.id}"]`, targetSuperset, json);
+
+	document.body.setAttribute('data-adding', 'false');
+	targetSuperset = undefined;
 }
 
 const appendRef = (container, idx, n) => {
@@ -272,7 +275,7 @@ function expand(container, json) {
 	const nodo_el = container.firstChild;
 	const referências_el = nodo_el.nextElementSibling;
 	const conteúdo_el = referências_el.nextElementSibling;
-	const n = new Node(nodo_el.getAttribute('data-nodo'), json);
+	const n = new Node(nodo_el.getAttribute('data-nodo'));
 
 	//Exibição das referências
 	for(let idx = 0; idx < n.nEdges; idx++) appendRef(container, idx, n);
@@ -318,10 +321,11 @@ function import_kja() {
 			const newIdGenerator = keyGen(0, () => 0);
 			const newId = () => newIdGenerator.next().value;
 
-			let json = {};
+			Node.json = {};
 			let nodoLivro, nodoCapítulo;
 			let livro, capítulo;
-			let nodoBiblia = new Node('0', json, 'Bíblia King James Atualizada');
+			let nodoBiblia = new Node('0');
+			nodoBiblia.data = 'Bíblia King James Atualizada';
 
 			let lines = text.match(/.+/gi);
 			let i = 0;
@@ -329,19 +333,24 @@ function import_kja() {
 				let match = line.match(/(.+?)\s+(\d+):(\d+)\s+(.+)/i);
 				if(livro != match[1]) {
 					livro = match[1];
-					nodoLivro = new Node(newId(), json, livro);
+					nodoLivro = new Node(newId());
+					nodoLivro.data = livro;
 					
 					capítulo = match[2];
-					nodoCapítulo = new Node(newId(), json, 'Capítulo ' + capítulo);
+					nodoCapítulo = new Node(newId());
+					nodoCapítulo.data = 'Capítulo ' + capítulo;
 					nodoLivro.insert(nodoCapítulo);
 
 					nodoBiblia.insert(nodoLivro)
 				} else if (capítulo != match[2]) {
 					capítulo = match[2];
-					nodoCapítulo = new Node(newId(), json, 'Capítulo ' + capítulo);
+					nodoCapítulo = new Node(newId());
+					nodoCapítulo.data = 'Capítulo ' + capítulo;
 					nodoLivro.insert(nodoCapítulo);
 				}
-				nodoCapítulo.insert(new Node(newId(), json, match[3] + '. ' + match[4])); //Versículo
+				let nodoVersículo = new Node(newId());
+				nodoVersículo.data = match[3] + '. ' + match[4];
+				nodoCapítulo.insert(); //Versículo
 				
 				//console.log(match);
 				//if(i++ == 30000) break;
