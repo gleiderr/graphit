@@ -12,14 +12,10 @@ window.addEventListener('load', () => {
 
 document.addEventListener('click', event => {
 	const target = event.target;
-	if(event.ctrlKey && (target.classList.contains('Nodo') || target.classList.contains('Aresta'))) { //Edição de elemento
+	if(event.ctrlKey && target.classList.contains('Nodo')) { //Edição de elemento
 		target.addEventListener('blur', blur);
 		target.setAttribute('contenteditable', true);
 		target.focus();
-	}
-
-	if(document.body.getAttribute('data-selecting') == 'true') {
-		associar(target, newId);
 	}
 
 	if(document.body.getAttribute('data-adding') == 'true') {
@@ -40,9 +36,6 @@ document.addEventListener('dblclick', event => {
 
 window.addEventListener('keydown', event => {
 	switch (event.key) {
-		/*case '*':
-			if(event.ctrlKey) document.body.setAttribute('data-selecting', 'true');
-			break;*/
 		case '+':
 			if(event.ctrlKey) {
 				event.preventDefault();
@@ -50,14 +43,11 @@ window.addEventListener('keydown', event => {
 			}
 			break;
 		case 'Escape':
-			document.body.setAttribute('data-selecting', 'false');
-			targetFrom = undefined;
 			document.body.setAttribute('data-adding', 'false');
 			targetSuperset = undefined;
 			console.log(event.key);
 			break;
 	}
-	
 });
 
 // ^^^^^^^^^ event_agregator
@@ -94,7 +84,6 @@ function iniciarPágina(json = {}) {
 
 function open(json) {
 	let targetSuperset;
-	let targetFrom;
 
 	//Exibe conteúdo de "0" em uma filha de <body>
 	let first = new Node('0');
@@ -130,9 +119,8 @@ function* keyGen(init = 0, next = Date.now) {
 const classificação = (node, element) => {
 	let c = [];
 	if(node.nContent > 0) c.push('Conjunto');
-	if(node.nEdges > 0) c.push('Comentado');
 
-	if((node.nContent > 0 || node.nEdges > 0) && !element.classList.contains('Expandido')) {
+	if(node.nContent > 0 && !element.classList.contains('Expandido')) {
 		c.push('Expansível');
 	}
 	return c;
@@ -165,21 +153,6 @@ const contêinerElement = node => {
 	return container;
 }
 
-const refElement = (idx, from) => {
-	const aresta = document.createElement('div');
-	aresta.classList.add('Aresta');
-	aresta.setAttribute('data-from', from.id);
-	aresta.setAttribute('data-idx', idx);
-	aresta.innerHTML = from.edgeData(idx);
-
-	const ref = document.createElement('div');
-	ref.classList.add('Referência');
-	ref.appendChild(aresta);
-
-	ref.appendChild(contêinerElement(from.edgeTo(idx)));
-	return ref;
-}
-
 const nodoFromElement = (element) => {
 	return new Node(element.getAttribute('data-nodo'));
 };
@@ -200,40 +173,7 @@ function blur(event) {
 		let node = new Node(target.getAttribute('data-nodo'));
 		node.data = target.innerHTML;
 		propagate(`[data-nodo="${node.id}"]`, target, json);
-	} else if(target.classList.contains('Aresta')) {
-		const from = new Node(target.getAttribute('data-from'));
-		const idx = target.getAttribute('data-idx');
-		from.edgeData(idx, target.innerHTML);
-		propagate(`[data-from="${from.id}"][data-idx="${idx}"]`, target, json);
 	}
-}
-
-function associar(target, newId) {
-	if(!targetFrom) {
-		if(target.id != 'novo_nodo') targetFrom = target;
-		return;
-	}
-
-	if(target.id == 'novo_nodo') {
-		target.setAttribute('data-nodo', newId());
-	}
-
-	let from = nodoFromElement(targetFrom, json);
-	let idx = from.nEdges;
-
-	from.edgeTo(idx, nodoFromElement(target, json));
-	from.edgeData(idx, '');
-
-	targetFrom.classList.add(...classificação(from, targetFrom));
-	if(targetFrom.classList.contains('Expandido')) {
-		appendRef(targetFrom.parentElement, idx, from);
-		//targetFrom.parentElement.appendChild(refElement(idx, from));
-	}
-	
-	propagate(`[data-nodo="${from.id}"]`, targetFrom, json);
-
-	document.body.setAttribute('data-selecting', 'false');
-	targetFrom = undefined;
 }
 
 function inserir(target, newId) {
@@ -246,10 +186,9 @@ function inserir(target, newId) {
 		target.setAttribute('data-nodo', newId());
 	}
 
-	let superset = nodoFromElement(targetSuperset, json);
-	let idx = superset.nEdges;
+	let superset = nodoFromElement(targetSuperset);
 
-	superset.insert(nodoFromElement(target, json));
+	superset.insert(nodoFromElement(target));
 
 	targetSuperset.classList.add(...classificação(superset, targetSuperset));
 	if(targetSuperset.classList.contains('Expandido')) {
@@ -262,13 +201,9 @@ function inserir(target, newId) {
 	targetSuperset = undefined;
 }
 
-const appendRef = (container, idx, n) => {
-	const referências_el = container.firstChild.nextElementSibling;
-	referências_el.appendChild(refElement(idx, n)); 
-};
 const appendContent = (container, idx, n) => {
 	const conteúdo_el = container.firstChild.nextElementSibling.nextElementSibling;
-	conteúdo_el.appendChild(contêinerElement(n.child(idx))); 
+	conteúdo_el.appendChild(contêinerElement(n.content(idx)));
 };
 
 function expand(container, json) {
@@ -276,9 +211,6 @@ function expand(container, json) {
 	const referências_el = nodo_el.nextElementSibling;
 	const conteúdo_el = referências_el.nextElementSibling;
 	const n = new Node(nodo_el.getAttribute('data-nodo'));
-
-	//Exibição das referências
-	for(let idx = 0; idx < n.nEdges; idx++) appendRef(container, idx, n);
 
 	//Exibição do conteúdo
 	for(let idx = 0; idx < n.nContent; idx++) appendContent(container, idx, n);
@@ -293,7 +225,7 @@ function propagate(selector, origem, json) {
 		if (element != origem && element.id != 'novo_nodo') {
 			element.innerHTML = origem.innerHTML;
 			if(element.hasAttribute('data-nodo'))
-				element.classList.add(...classificação(nodoFromElement(element, json), element));
+				element.classList.add(...classificação(nodoFromElement(element), element));
 			//const classList = element.classList;
 			//const newElement = origem.cloneNode(true);
 			//newElement.classList = classList;
