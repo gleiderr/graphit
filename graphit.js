@@ -1,12 +1,10 @@
 export class Node {
 	static set json(json) {
-		console.log('fdsa');
 		Node.prototype.obj = json;
 	}
 
-	constructor (id, obj = undefined) {
+	constructor (id) {
 		this.id = id;
-		this.obj = obj || this.obj;
 		this.node = this.obj[id] || (this.obj[id] = {});
 	}
 
@@ -22,7 +20,7 @@ export class Node {
 		return (this.node.content && this.node.content.length) || 0;
 	}
 
-	child(idx) {
+	content(idx) {
 		return idx >= 0 && idx < this.nContent ? new Node(this.node.content[idx], this.obj) : null;
 	}
 
@@ -36,28 +34,28 @@ export class Node {
 		this.obj[node.id].content_of.push(this.id);
 	}
 
-	get nEdges() {
-		return (this.node.edges && this.node.edges.length) || 0;
-	}
+	// get nEdges() {
+	// 	return (this.node.edges && this.node.edges.length) || 0;
+	// }
 
-	edgeData(idx, data = undefined) { 
-		if(data !== undefined) {
-			this.node.edges = this.node.edges || [];
-			this.node.edges[idx] = this.node.edges[idx] || [];
+	// edgeData(idx, data = undefined) { 
+	// 	if(data !== undefined) {
+	// 		this.node.edges = this.node.edges || [];
+	// 		this.node.edges[idx] = this.node.edges[idx] || [];
 			
-			this.node.edges[idx][0] = data;
-		}
-		return this.node.edges[idx][0];
-	}
+	// 		this.node.edges[idx][0] = data;
+	// 	}
+	// 	return this.node.edges[idx][0];
+	// }
 
-	edgeTo(idx, to = undefined) {
-		if(to !== undefined) {
-			this.node.edges = this.node.edges || [];
-			this.node.edges[idx] = this.node.edges[idx] || [];
+	// edgeTo(idx, to = undefined) {
+	// 	if(to !== undefined) {
+	// 		this.node.edges = this.node.edges || [];
+	// 		this.node.edges[idx] = this.node.edges[idx] || [];
 
-			this.node.edges[idx][1] = to.id;
-		}
-		return new Node(this.node.edges[idx][1], this.obj);
-	}
+	// 		this.node.edges[idx][1] = to.id;
+	// 	}
+	// 	return new Node(this.node.edges[idx][1], this.obj);
+	// }
 
 }
