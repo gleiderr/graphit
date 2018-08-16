@@ -139,19 +139,21 @@ function open(json) {
 
 	document.body.addEventListener('click', event => {
 		const target = event.target;
-		if(event.ctrlKey && (target.classList.contains('Nodo') || target.classList.contains('Aresta'))) { //Edição de elemento
-			target.addEventListener('blur', blur);
-			target.setAttribute('contenteditable', true);
-			target.focus();
-		}
+		//if(target.classList.contains('Nodo')) {
+			if(event.ctrlKey && (target.classList.contains('Nodo') || target.classList.contains('Aresta'))) { //Edição de elemento
+				target.addEventListener('blur', blur);
+				target.setAttribute('contenteditable', true);
+				target.focus();
+			}
 
-		if(document.body.getAttribute('data-selecting') == 'true') {
-			associar(target, newId);
-		}
+			if(document.body.getAttribute('data-selecting') == 'true') {
+				associar(target, newId);
+			}
 
-		if(document.body.getAttribute('data-adding') == 'true') {
-			inserir(target, newId);
-		}		
+			if(document.body.getAttribute('data-adding') == 'true') {
+				inserir(target, newId);
+			}
+		//}
 
 		event.stopPropagation();
 	});
