@@ -38,7 +38,7 @@ function iniciarPágina(json = {}) {
 	document.body.appendChild(div);
 	
 	open(json);
-};
+}
 
 function handle(event) {
 	var reader = new FileReader();
@@ -82,7 +82,7 @@ const nodoElement = node => {
 	element.classList.add(...classificação(node, element));
 
 	return element;
-}
+};
 
 const contêinerElement = node => {
 	const container = document.createElement('div');
@@ -98,7 +98,7 @@ const contêinerElement = node => {
 	container.appendChild(conteúdo);
 
 	return container;
-}
+};
 
 const refElement = (idx, from) => {
 	const aresta = document.createElement('div');
@@ -113,7 +113,7 @@ const refElement = (idx, from) => {
 
 	ref.appendChild(contêinerElement(from.edgeTo(idx)));
 	return ref;
-}
+};
 
 const nodoFromElement = (element, json) => {
 	return new Node(element.getAttribute('data-nodo'), json);
@@ -337,7 +337,7 @@ function import_kja() {
 					nodoCapítulo = new Node(newId(), json, 'Capítulo ' + capítulo);
 					nodoLivro.insert(nodoCapítulo);
 
-					nodoBiblia.insert(nodoLivro)
+					nodoBiblia.insert(nodoLivro);
 				} else if (capítulo != match[2]) {
 					capítulo = match[2];
 					nodoCapítulo = new Node(newId(), json, 'Capítulo ' + capítulo);
@@ -352,5 +352,5 @@ function import_kja() {
 			return json;
 		})
 		.then(iniciarPágina)
-		.catch(ex => {console.error(ex)});
+		.catch(ex => {console.error(ex);});
 }
