@@ -1,28 +1,27 @@
 import {Node} from './graphit.js';
+import {cabecalho} from './elements.js';
 
 window.addEventListener('load', () => {
 	fetch('./bíblia/kja.json')
 		.then(response => response.json())
-		.then(iniciarPágina)
-		.catch(ex => {
-			console.error(ex);
-			iniciarPágina();
-		});
+		.then(open, console.error)
+		.catch(open);
 });
 
 document.addEventListener('click', event => {
 	const target = event.target;
-	if(event.ctrlKey && target.classList.contains('Nodo')) { //Edição de elemento
-		target.addEventListener('blur', blur);
-		target.setAttribute('contenteditable', true);
-		target.focus();
+	if(target.classList.contains('Nodo')) {
+		if(event.ctrlKey) { //Edição de elemento
+			target.addEventListener('blur', blur);
+			target.setAttribute('contenteditable', true);
+			target.focus();
+		}
+
+		if(document.body.getAttribute('data-adding') == 'true') {
+			inserir(target, newId);
+		}
+		event.stopPropagation();
 	}
-
-	if(document.body.getAttribute('data-adding') == 'true') {
-		inserir(target, newId);
-	}		
-
-	event.stopPropagation();
 });
 
 document.addEventListener('dblclick', event => {
@@ -53,45 +52,19 @@ window.addEventListener('keydown', event => {
 // ^^^^^^^^^ event_agregator
 // vvvvvvvvv events
 
-function iniciarPágina(json = {}) {
+function open(json = {}) {
 	Node.json = json;
-
-	let div = document.createElement('div');
-	div.classList.add('Cabeçalho');
-	
-	div.innerHTML = '<input id="input" type="file" accept=".json">';
-	let input = div.firstChild;
-	input.addEventListener('input', handle);
-
-	let button = document.createElement('button');
-	button.innerHTML = '💾 salvar';
-	button.addEventListener('click', () => {save(json);});
-
-	div.appendChild(button);
-
-	const novoNodo = document.createElement('div');
-	novoNodo.id	= 'novo_nodo';
-	novoNodo.innerText = 'Novo nodo';
-	novoNodo.classList.add('Nodo');
-	div.appendChild(novoNodo);
-
-
-	document.body = document.createElement('body');
-	document.body.appendChild(div);
-	
-	open(json);
-};
-
-function open(json) {
 	let targetSuperset;
 
+	document.body = document.createElement('body');
+	document.body.appendChild(cabecalho(handle));
+	
 	//Exibe conteúdo de "0" em uma filha de <body>
 	let first = new Node('0');
 	document.body.appendChild(contêinerElement(first));
 
 	const newIdGenerator = keyGen(lastID(json), () => 0);
 	const newId = () => newIdGenerator.next().value;
-
 }
 
 function handle(event) {
@@ -99,10 +72,10 @@ function handle(event) {
 	reader.onload = (e) => {
 		try {
 			let json = JSON.parse(e.target.result);
-			iniciarPágina(json);
+			open(json);
 		} catch(exception) {
 			console.error(exception);
-			iniciarPágina();
+			open();
 		}
 	};
 
@@ -244,52 +217,4 @@ function save(json) {
 	anchor.href = window.URL.createObjectURL(blob);
 	anchor.dataset.downloadurl = ['application/json', anchor.download, anchor.href].join(':');
 	anchor.click();
-}
-
-function import_kja() {
-	fetch('./kja.txt')
-		.then(response => response.text())
-		.then(text => {
-			const newIdGenerator = keyGen(0, () => 0);
-			const newId = () => newIdGenerator.next().value;
-
-			Node.json = {};
-			let nodoLivro, nodoCapítulo;
-			let livro, capítulo;
-			let nodoBiblia = new Node('0');
-			nodoBiblia.data = 'Bíblia King James Atualizada';
-
-			let lines = text.match(/.+/gi);
-			let i = 0;
-			for(let line of lines) {
-				let match = line.match(/(.+?)\s+(\d+):(\d+)\s+(.+)/i);
-				if(livro != match[1]) {
-					livro = match[1];
-					nodoLivro = new Node(newId());
-					nodoLivro.data = livro;
-					
-					capítulo = match[2];
-					nodoCapítulo = new Node(newId());
-					nodoCapítulo.data = 'Capítulo ' + capítulo;
-					nodoLivro.insert(nodoCapítulo);
-
-					nodoBiblia.insert(nodoLivro)
-				} else if (capítulo != match[2]) {
-					capítulo = match[2];
-					nodoCapítulo = new Node(newId());
-					nodoCapítulo.data = 'Capítulo ' + capítulo;
-					nodoLivro.insert(nodoCapítulo);
-				}
-				let nodoVersículo = new Node(newId());
-				nodoVersículo.data = match[3] + '. ' + match[4];
-				nodoCapítulo.insert(); //Versículo
-				
-				//console.log(match);
-				//if(i++ == 30000) break;
-			}
-			//console.log(json);
-			return json;
-		})
-		.then(iniciarPágina)
-		.catch(ex => {console.error(ex)});
 }
