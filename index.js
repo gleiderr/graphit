@@ -139,7 +139,7 @@ function open(json) {
 
 	document.body.addEventListener('click', event => {
 		const target = event.target;
-		//if(target.classList.contains('Nodo')) {
+		if(target.classList.contains('Nodo')) {
 			if(event.ctrlKey && (target.classList.contains('Nodo') || target.classList.contains('Aresta'))) { //Edição de elemento
 				target.addEventListener('blur', blur);
 				target.setAttribute('contenteditable', true);
@@ -153,7 +153,7 @@ function open(json) {
 			if(document.body.getAttribute('data-adding') == 'true') {
 				inserir(target, newId);
 			}
-		//}
+		}
 
 		event.stopPropagation();
 	});
