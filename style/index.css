@@ -19,46 +19,21 @@ body > .Contêiner {
   box-sizing: border-box;
 }
 
-.Expansível {
+.Expansível, .Expandido {
 	cursor: pointer;
 }
-.Conjunto.Expansível::before {
+.Expansível::before {
 	content: '▸';
 	margin-left: -.8em;
 }
-.Conjunto.Expandido::before {
+.Expandido::before {
 	content: '▾';
 	margin-left: -.8em;
-}
-.Comentado.Expansível::after {
-  content: '✽';
-  font-size: xx-small;
-  vertical-align: top;
-}
-.Comentado.Expandido::after {
-  content: '✽';
-  font-size: xx-small;
-  vertical-align: super;
 }
 .Contêiner {
   border-left-width: 1px;
   border-left-style: dotted;
   padding-left: 1em;
-}
-.Referência {
-  margin-left: 2em;
-  border-left: solid;
-  border-left-width: 1px;
-  border-left-color: cornflowerblue;
-  font-size: small;
-}
-.Aresta {
-  display: inline-block;
-  padding-right: .5em;
-  padding-left: .5em; 
-  vertical-align: top;
-  font-weight: bold;
-  background: aliceblue;
 }
 .Aresta, .Nodo, .Contêiner {
   min-height: 1.2em;
@@ -71,7 +46,7 @@ body > .Contêiner {
   display: inline-block;
 }
 [contenteditable=true] {
-	background: aliceblue;	
+	/* background: aliceblue; */
 }
 [data-selecting=true] .Nodo:hover{
   background-color: darkseagreen;
@@ -89,27 +64,15 @@ body > .Contêiner {
     border-width: 2px;
 }
 
-/*++Contêiner[+]+--------------------------------+
+/*++Nodo[+]+-------------------------------------+
   |                                              |
-  | ++Nodo[1]+-------------------------------+   |
+  | ++Data[1]+-------------------------------+   |
   | |                                        |   |
   | +----------------------------------------+   |
   |                                              |
-  |  +-Referências[1]--------------------------+ |
-  |  | +-Referência[*]+----------------------+ | |
-  |  | |                                     | | |
-  |  | | ++Aresta[1]+--+  ++Contêiner[1]+--+ | | |
-  |  | | |             |  |                | | | |
-  |  | | +-------------+  +----------------+ | | |
-  |  | |                                     | | |
-  |  | +-------------------------------------+ | |
-  |  +-----------------------------------------+ |
-  |                                              |
-  |  +-Conteúdo[1]-----------------------------+ |
-  |  | +-Contêiner[*]+-----------------------+ | |
-  |  | |                                     | | |
-  |  | |                                     | | |
-  |  | +-------------------------------------+ | |
-  |  +-----------------------------------------+ |
+  |   +-Nodo[*]+-----------------------------+   |
+  |   |                                      |   |
+  |   |                                      |   |
+  |   +--------------------------------------+   |
   |                                              |
   +----------------------------------------------+*/
