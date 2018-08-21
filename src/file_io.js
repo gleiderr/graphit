@@ -1,13 +1,19 @@
 import {Node} from './graphit.js';
 
-export const open_file = (event) => {
+export const set_file = json => {
+	Node.json = json;
+};
+
+export const open_file = (event, show) => {
 	const reader = new FileReader();
 	reader.onload = (e) => {
 		try {
-			Node.json = JSON.parse(e.target.result);
+			set_file(JSON.parse(e.target.result));
+			show();
 		} catch(exception) {
 			console.error(exception);
-			Node.json = {};
+			set_file({});
+			show();
 		}
 	};
 
@@ -23,8 +29,4 @@ export const save_file = () => {
 	anchor.href = window.URL.createObjectURL(blob);
 	anchor.dataset.downloadurl = ['application/json', anchor.download, anchor.href].join(':');
 	anchor.click();
-};
-
-export const set_file = json => {
-	Node.json = json;
 };

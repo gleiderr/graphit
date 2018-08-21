@@ -1,7 +1,7 @@
-import {Node} from './graphit.js';
-import {nodo_element, expand, retract} from './facade.js';
+import {nodo_element, expand, retract, apply, insert, init_facade} from './facade.js';
 import {open_file, save_file, set_file} from './file_io.js';
 
+const state = {};
 window.addEventListener('load', () => {
 	fetch('./bíblia/kja.json')
 		.then(response => response.json())
@@ -14,22 +14,13 @@ window.addEventListener('load', () => {
 
 document.addEventListener('click', event => {
 	const target = event.target;
-	if(target.classList.contains('Nodo')) {
-		if(event.ctrlKey) { //Edição de elemento
-			target.addEventListener('blur', blur);
-			target.setAttribute('contenteditable', true);
-			target.focus();
-		}
-
-		if(document.body.getAttribute('data-adding') == 'true') {
-			inserir(target, newId);
-		}
-		event.stopPropagation();
+	if(state.state == 'inserting' && target.hasAttribute('data-nodo')) {
+	   	state.selected.push(target);
+	   	target.style.background = 'peachpuff';
 	}
 
 	if(target.type == 'file') target.oninput = ev => {
-		open_file(ev);
-		show();
+		open_file(ev, show);
 	};
 	if(target.type == 'submit') save_file();	
 });
@@ -44,28 +35,60 @@ document.addEventListener('dblclick', event => {
 });
 
 window.addEventListener('keydown', event => {
+	console.log(event.key);
 	switch (event.key) {
-		case '+':
+		case 'i': //Incluir nodo
 			if(event.ctrlKey) {
+				state.state = "inserting";
+				state.selected = [state.focused];
+				document.body.setAttribute('data-selecting', 'true');
+
+				state.selected[0].style.background = 'orange';
+			}
+			break;
+		case 'Delete': //Excluir nodo
+			if(event.ctrlKey) {
+
+			}
+			break;
+		case 'Enter':
+			if(state.state == 'inserting'){
 				event.preventDefault();
-				document.body.setAttribute('data-adding', 'true');
+				if(state.selected.length == 1) insert(state.selected[0]);
+				else for(let i = 1; i < state.selected.length; i++) {
+					insert(state.selected[0], state.selected[i]);
+				}
+				
+				//Encerra seleção
+				for(let i = 0; i < state.selected.length; i++) state.selected[i].style.background = null;
+				document.body.setAttribute('data-selecting', 'false');
+				state.state = state.selected = undefined;
 			}
 			break;
 		case 'Escape':
-			document.body.setAttribute('data-adding', 'false');
-			targetSuperset = undefined;
-			console.log(event.key);
+			//Encerra seleção
+			for(let i = 0; i < state.selected.length; i++) state.selected[i].style.background = null;
+			document.body.setAttribute('data-selecting', 'false');
+			state.state = state.selected = undefined;
 			break;
 	}
 });
 
+document.addEventListener('focus', ev => {
+	state.focused = ev.target;
+}, true);
+
 document.addEventListener('blur', ev => {
-	console.log(ev);
+	if(ev.target.hasAttribute('data-nodo')) apply(ev.target);
 }, true);
 
 // ^^^^^^^^^ event_agregator
 // vvvvvvvvv events
 
 function show() {
-	document.body.appendChild(nodo_element(0));
+	const g = document.createElement('div');
+	g.id = 'painel1';
+	g.appendChild(nodo_element(0));
+	
+	document.body.replaceChild(g, document.getElementById('painel1'));
 }

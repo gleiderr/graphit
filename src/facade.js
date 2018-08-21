@@ -1,5 +1,31 @@
 import {Node} from './graphit.js';
-import {newId} from './ids.js';
+
+//Função construída na primeira chamada
+let newId = () => {
+	//Calcula último ID
+	let lastID = 0;
+	for (let id in Node.json) lastID = Math.max(parseInt(id, 36), lastID);
+	console.log(lastID);
+
+	const newIdGenerator = keyGen(lastID, () => 0);
+	newId = () => {
+		let value = newIdGenerator.next().value;
+		console.log(parseInt(value, 36));
+		return value;
+	};
+	return newId();
+
+	function* keyGen(init = 0, next = Date.now) {
+		let lastKey = init;
+		while(true) {
+			yield (lastKey = Math.max(next(), lastKey + 1)).toString(36);
+		}
+	}
+};
+
+export const init_facade = () => {
+	newId = undefined;
+};
 
 export const nodo_element = (id/*, idx = 0*/) => {
 	const node = new Node(id);
@@ -50,14 +76,13 @@ export const apply = el => {
 	let node = new Node(el.getAttribute('data-nodo'));
 	node.data = el.innerHTML;
 	
+	//Propagação
 	const elementos = document.querySelectorAll(`[data-nodo="${node.id}"]`);
-	for (let elemento of elementos) {
-		elemento.innerHTML = node.data;
-	}
+	for (let elemento of elementos) elemento.innerHTML = node.data;
 };
 
-export const insert = (parent_el, child_el = undefined, idx = undefined) => {
-	let parent_id = parent_el.getAttribute('data-nodo');
+export const insert = (origin_el, child_el = undefined, idx = undefined) => {
+	let parent_id = origin_el.getAttribute('data-nodo');
 	let child, parent = new Node(parent_id);
 	
 	//Inserção real
@@ -69,10 +94,11 @@ export const insert = (parent_el, child_el = undefined, idx = undefined) => {
 	parent.insert(child, idx);
 	
 	//Inserção visual
-	const els = Array.from(document.querySelectorAll(`[data-nodo=${parent_id}`));
+	const els = Array.from(document.querySelectorAll(`[data-nodo="${parent_id}"]`));
 	for (let el of els) {
+		const parent_el = el.parentElement;
 		if(el.classList.contains('Expandido')) {
-			el.insertBefore(nodo_element(child.id, idx), el.childNodes[idx+1]);
+			parent_el.insertBefore(nodo_element(child.id, idx), el.childNodes[idx+1]);
 		} else {
 			el.classList.add('Expansível');
 		}
