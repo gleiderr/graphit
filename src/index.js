@@ -35,9 +35,9 @@ document.addEventListener('dblclick', event => {
 });
 
 window.addEventListener('keydown', event => {
-	console.log(event.key);
+	//console.log(event.key);
 	switch (event.key) {
-		case 'i': //Incluir nodo
+		case 'i', 'I': //Incluir nodo
 			if(event.ctrlKey) {
 				state.state = "inserting";
 				state.selected = [state.focused];
