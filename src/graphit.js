@@ -3,6 +3,10 @@ export class Node {
 		Node.prototype.obj = json;
 	}
 
+	static get json() {
+		return Node.prototype.obj;
+	}
+
 	constructor (id) {
 		this.id = id;
 		this.node = this.obj[id] || (this.obj[id] = {});
