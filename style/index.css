@@ -48,10 +48,7 @@ body > .Contêiner {
 [contenteditable=true] {
 	/* background: aliceblue; */
 }
-[data-selecting=true] .Nodo:hover{
-  background-color: darkseagreen;
-}
-[data-adding=true] .Nodo:hover{
+[data-selecting=true] [data-nodo]:hover{
   background-color: darkorange;
 }
 #novo_nodo {
