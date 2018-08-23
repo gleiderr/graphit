@@ -37,13 +37,15 @@ document.addEventListener('dblclick', event => {
 window.addEventListener('keydown', event => {
 	//console.log(event.key);
 	switch (event.key) {
-		case 'i', 'I': //Incluir nodo
-			if(event.ctrlKey) {
-				state.state = "inserting";
-				state.selected = [state.focused];
-				document.body.setAttribute('data-selecting', 'true');
+		case 'i': case 'I': //Incluir nodo
+			if(event.target.hasAttribute('data-nodo')) {
+				if(event.ctrlKey) {
+					state.state = "inserting";
+					state.selected = [state.focused];
+					document.body.setAttribute('data-selecting', 'true');
 
-				state.selected[0].style.background = 'orange';
+					state.selected[0].style.background = 'orange';
+				}	
 			}
 			break;
 		case 'Delete': //Excluir nodo
@@ -67,9 +69,11 @@ window.addEventListener('keydown', event => {
 			break;
 		case 'Escape':
 			//Encerra seleção
-			for(let i = 0; i < state.selected.length; i++) state.selected[i].style.background = null;
-			document.body.setAttribute('data-selecting', 'false');
-			state.state = state.selected = undefined;
+			if(state.selected) {
+				for(let i = 0; i < state.selected.length; i++) state.selected[i].style.background = null;
+				document.body.setAttribute('data-selecting', 'false');
+				state.state = state.selected = undefined;
+			} 
 			break;
 	}
 });
