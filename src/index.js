@@ -1,4 +1,4 @@
-import {nodo_element, expand, retract, apply, insert, init_facade} from './facade.js';
+import {nodo_element, expand, retract, apply, insert, remove} from './facade.js';
 import {open_file, save_file, set_file} from './file_io.js';//
 
 const state = {};
@@ -39,7 +39,7 @@ window.addEventListener('keydown', event => {
 	switch (event.key) {
 		case 'i': case 'I': //Incluir nodo
 			if(event.target.hasAttribute('data-nodo')) {
-				if(event.ctrlKey) {
+				if(event.ctrlKey && !event.shiftKey) {
 					state.state = "inserting";
 					state.selected = [state.focused];
 					document.body.setAttribute('data-selecting', 'true');
@@ -50,7 +50,7 @@ window.addEventListener('keydown', event => {
 			break;
 		case 'Delete': //Excluir nodo
 			if(event.ctrlKey) {
-
+				remove(state.focused);
 			}
 			break;
 		case 'Enter':
@@ -92,6 +92,7 @@ document.addEventListener('blur', ev => {
 function show() {
 	const g = document.createElement('div');
 	g.id = 'painel1';
+	g.classList.add('Painel');
 	g.appendChild(nodo_element(0));
 	
 	document.body.replaceChild(g, document.getElementById('painel1'));

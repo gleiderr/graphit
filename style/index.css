@@ -12,6 +12,11 @@ button {
 	margin-left: 16px;
 }
 
+.Painel {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
 body > .Contêiner {
   padding-top: 8px;
   overflow-y: auto;

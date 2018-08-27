@@ -29,4 +29,6 @@ export const save_file = () => {
 	anchor.href = window.URL.createObjectURL(blob);
 	anchor.dataset.downloadurl = ['application/json', anchor.download, anchor.href].join(':');
 	anchor.click();
+
+	console.log({save_at: Date()});
 };

@@ -31,11 +31,18 @@ export class Node {
 	insert(node) {
 		//[this.node] contains [node]
 		this.node.content = this.node.content || [];
-		this.node.content.push(node.id);
+		this.node.content.push(node.id); //trocar para splice no futuro
 
 		//[node] is content_of [this.node]
 		this.obj[node.id].content_of = this.obj[node.id].content_of || [];
 		this.obj[node.id].content_of.push(this.id);
+	}
+
+	delete(idx) {
+		const deleted_id = this.obj[this.id].content.splice(idx, 1)[0];
+		
+		const content_of = this.obj[deleted_id].content_of;
+		content_of.splice(content_of.indexOf(this.id), 1);
 	}
 
 	// get nEdges() {
