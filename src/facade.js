@@ -5,7 +5,7 @@ let newId = () => {
 	//Calcula último ID
 	let lastID = 0;
 	for (let id in Node.json) lastID = Math.max(parseInt(id, 36), lastID);
-	console.log(lastID);
+	console.log({lastID});
 
 	const newIdGenerator = keyGen(lastID, () => 0);
 	newId = () => {
@@ -27,7 +27,7 @@ export const init_facade = () => {
 	newId = undefined;
 };
 
-export const nodo_element = (id/*, idx = 0*/) => {
+export const nodo_element = (id/*, idx = 0*/) => { //tornar essa função não pública
 	const node = new Node(id);
 
 	const container = document.createElement('div');
@@ -43,6 +43,14 @@ export const nodo_element = (id/*, idx = 0*/) => {
 	nodo_element.innerText = node.data || '';
 
 	return container;
+};
+
+const all_elements = id => {
+	return Array.from(document.querySelectorAll(`[data-nodo="${id}"]`));
+};
+
+const nodo_from_element = el => {
+	return new Node(el.getAttribute('data-nodo'));
 };
 
 const replace_nodo_element = (el) => {
@@ -82,8 +90,8 @@ export const apply = el => {
 };
 
 export const insert = (origin_el, child_el = undefined, idx = undefined) => {
-	let parent_id = origin_el.getAttribute('data-nodo');
-	let child, parent = new Node(parent_id);
+	let parent_id = origin_el.getAttribute('data-nodo'); //Substituir por nodo_from_element()
+	let child, parent = new Node(parent_id);             //Substituir por nodo_from_element()
 	
 	//Inserção real
 	if(!child_el) { //novo elemento
@@ -94,13 +102,34 @@ export const insert = (origin_el, child_el = undefined, idx = undefined) => {
 	parent.insert(child, idx);
 	
 	//Inserção visual
-	const els = Array.from(document.querySelectorAll(`[data-nodo="${parent_id}"]`));
+	const els = Array.from(document.querySelectorAll(`[data-nodo="${parent_id}"]`)); //substituir por all_elements()
 	for (let el of els) {
 		const parent_el = el.parentElement;
 		if(el.classList.contains('Expandido')) {
 			parent_el.insertBefore(nodo_element(child.id, idx), el.childNodes[idx+1]);
 		} else {
 			el.classList.add('Expansível');
+		}
+	}
+};
+
+export const remove = (child_el) => {
+	const parent_el = child_el.parentElement.parentElement;
+	const parent = nodo_from_element(parent_el.firstChild),
+	      child = nodo_from_element(child_el);
+	const child_idx = Array.from(parent_el.childNodes).indexOf(child_el.parentElement);
+
+	//Remoção real
+	parent.delete(child_idx - 1);
+
+	//Remoção visual
+	const els = all_elements(parent.id);
+	for(let el of els) {
+		const container_el = el.parentElement;
+		if(parent.nContent == 0) {
+			container_el.parentElement.replaceChild(nodo_element(parent.id), container_el);
+		} else {
+			container_el.childNodes[child_idx].remove();
 		}
 	}
 };
