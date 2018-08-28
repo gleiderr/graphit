@@ -23,7 +23,7 @@ export const open_file = (event, show) => {
 
 export const save_file = () => {
 	let content = JSON.stringify(Node.json, null, 1);
-    let blob = new Blob([content], { type: 'text/plain' });
+    let blob = new Blob([content], { type: 'application/json' });
     let	anchor = document.createElement('a');
 
 	anchor.download = "graphit.json";
