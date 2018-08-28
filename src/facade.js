@@ -32,7 +32,7 @@ export const nodo_element = (id/*, idx = 0*/) => { //tornar essa função não p
 	nodo_element.setAttribute('data-nodo', id);
 	nodo_element.contentEditable = 'true';
 	//nodo_element.setAttribute('data-idx', idx);
-	nodo_element.innerText = node.data || '';
+	nodo_element.innerHTML = node.data || '';
 
 	return container;
 };
