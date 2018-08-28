@@ -1,30 +1,22 @@
 import {Node} from './graphit.js';
 
 //Função construída na primeira chamada
-let newId = () => {
-	//Calcula último ID
-	let lastID = 0;
-	for (let id in Node.json) lastID = Math.max(parseInt(id, 36), lastID);
-	console.log({lastID});
+let newId;
 
-	const newIdGenerator = keyGen(lastID, () => 0);
-	newId = () => {
-		let value = newIdGenerator.next().value;
-		console.log(parseInt(value, 36));
-		return value;
-	};
-	return newId();
+const set_new_id = () => {
+	const generator = (function* () {
+		let lastKey = 0;
+		for (let id in Node.json) lastKey = Math.max(parseInt(id, 36), lastKey);
+		console.log('set_new_id', {lastKey, id: lastKey.toString(36)});
 
-	function* keyGen(init = 0, next = Date.now) {
-		let lastKey = init;
 		while(true) {
-			yield (lastKey = Math.max(next(), lastKey + 1)).toString(36);
+			++lastKey;
+			console.log({lastKey, id: lastKey.toString(36)});
+			yield lastKey.toString(36);
 		}
-	}
-};
-
-export const init_facade = () => {
-	newId = undefined;
+	})();
+	
+	newId = () => generator.next().value;
 };
 
 export const nodo_element = (id/*, idx = 0*/) => { //tornar essa função não pública
@@ -108,7 +100,7 @@ export const insert = (origin_el, child_el = undefined, idx = undefined) => {
 		if(el.classList.contains('Expandido')) {
 			parent_el.insertBefore(nodo_element(child.id, idx), el.childNodes[idx+1]);
 		} else {
-			el.classList.add('Expansível');
+			el.classList.add('Expansível'); //review replaceChild nodo_element
 		}
 	}
 };
@@ -128,8 +120,19 @@ export const remove = (child_el) => {
 		const container_el = el.parentElement;
 		if(parent.nContent == 0) {
 			container_el.parentElement.replaceChild(nodo_element(parent.id), container_el);
-		} else {
+		} else if(el.classList.contains('Expandido')) {
 			container_el.childNodes[child_idx].remove();
 		}
 	}
 };
+
+export function show() {
+	set_new_id();
+
+	const g = document.createElement('div');
+	g.id = 'painel1';
+	g.classList.add('Painel');
+	g.appendChild(nodo_element(0));
+	
+	document.body.replaceChild(g, document.getElementById('painel1'));
+}

@@ -1,4 +1,4 @@
-import {nodo_element, expand, retract, apply, insert, remove} from './facade.js';
+import {expand, retract, apply, insert, remove, show } from './facade.js';
 import {open_file, save_file, set_file} from './file_io.js';//
 
 const state = {};
@@ -85,15 +85,3 @@ document.addEventListener('focus', ev => {
 document.addEventListener('blur', ev => {
 	if(ev.target.hasAttribute('data-nodo')) apply(ev.target);
 }, true);
-
-// ^^^^^^^^^ event_agregator
-// vvvvvvvvv events
-
-function show() {
-	const g = document.createElement('div');
-	g.id = 'painel1';
-	g.classList.add('Painel');
-	g.appendChild(nodo_element(0));
-	
-	document.body.replaceChild(g, document.getElementById('painel1'));
-}

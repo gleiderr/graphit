@@ -1,4 +1,5 @@
 import {Node} from './graphit.js';
+//import {show} from './facade.js';
 
 export const set_file = json => {
 	Node.json = json;
