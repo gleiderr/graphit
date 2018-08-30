@@ -78,7 +78,9 @@ export const apply = el => {
 	
 	//Propagação
 	const elementos = document.querySelectorAll(`[data-nodo="${node.id}"]`);
-	for (let elemento of elementos) elemento.innerHTML = node.data;
+	for (let elemento of elementos) {
+		if(elemento != el) elemento.innerHTML = node.data;
+	}
 };
 
 export const insert = (origin_el, child_el = undefined, idx = undefined) => {
