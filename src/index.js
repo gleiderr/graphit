@@ -82,6 +82,6 @@ document.addEventListener('focus', ev => {
 	state.focused = ev.target;
 }, true);
 
-document.addEventListener('blur', ev => {
+document.addEventListener('input', ev => {
 	if(ev.target.hasAttribute('data-nodo')) apply(ev.target);
 }, true);
