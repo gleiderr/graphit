@@ -22,7 +22,9 @@ document.addEventListener('click', event => {
 	if(target.type == 'file') target.oninput = ev => {
 		open_file(ev, show);
 	};
-	if(target.type == 'submit') save_file();	
+	
+	let input = document.getElementsByTagName('input')[0]; //review
+	if(target.type == 'submit') save_file(input.files[0] && input.files[0].name); //review
 });
 
 document.addEventListener('dblclick', event => {
