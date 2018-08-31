@@ -5,7 +5,7 @@ body {
 .Cabeçalho {
   background-color: aliceblue;
   padding: 8px;
-  min-height: 5vh;
+  min-height: 40px;
   box-sizing: border-box;
 }
 button {
@@ -15,6 +15,9 @@ button {
 .Painel {
   padding-left: 1em;
   padding-right: 1em;
+  scroll-behavior: auto;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
 }
 
 body > .Contêiner {
