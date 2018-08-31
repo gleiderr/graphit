@@ -21,12 +21,12 @@ export const open_file = (event, show) => {
 	reader.readAsText(event.target.files[0]);
 };
 
-export const save_file = () => {
+export const save_file = (file_name = 'graphit.json') => {
 	let content = JSON.stringify(Node.json, null, 1);
     let blob = new Blob([content], { type: 'application/json' });
     let	anchor = document.createElement('a');
 
-	anchor.download = "graphit.json";
+	anchor.download = file_name;
 	anchor.href = window.URL.createObjectURL(blob);
 	anchor.dataset.downloadurl = ['application/json', anchor.download, anchor.href].join(':');
 	anchor.click();
