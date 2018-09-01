@@ -24,7 +24,17 @@ document.addEventListener('click', event => {
 	};
 	
 	let input = document.getElementsByTagName('input')[0]; //review
-	if(target.type == 'submit') save_file(input.files[0] && input.files[0].name); //review
+	if(target.type == 'submit') {
+		save_file(input.files[0] && input.files[0].name)
+			.then(() => {
+				let date = new Date(),
+					h = date.getHours()   < 10 ? '0' + date.getHours() :   date.getHours(),
+					m = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes(),
+					s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+
+				document.getElementById('save_at').innerText = 'Salvo às: ' + `${h}:${m}:${s}`;
+			});
+	}
 });
 
 document.addEventListener('dblclick', event => {
