@@ -28,10 +28,10 @@ export class Node {
 		return idx >= 0 && idx < this.nContent ? new Node(this.node.content[idx], this.obj) : null;
 	}
 
-	insert(node) {
+	insert(node, idx = this.node.content.length) {
 		//[this.node] contains [node]
 		this.node.content = this.node.content || [];
-		this.node.content.push(node.id); //trocar para splice no futuro
+		this.node.content.splice(idx, 0, node.id);
 
 		//[node] is content_of [this.node]
 		this.obj[node.id].content_of = this.obj[node.id].content_of || [];
@@ -44,29 +44,5 @@ export class Node {
 		const content_of = this.obj[deleted_id].content_of;
 		content_of.splice(content_of.indexOf(this.id), 1);
 	}
-
-	// get nEdges() {
-	// 	return (this.node.edges && this.node.edges.length) || 0;
-	// }
-
-	// edgeData(idx, data = undefined) { 
-	// 	if(data !== undefined) {
-	// 		this.node.edges = this.node.edges || [];
-	// 		this.node.edges[idx] = this.node.edges[idx] || [];
-			
-	// 		this.node.edges[idx][0] = data;
-	// 	}
-	// 	return this.node.edges[idx][0];
-	// }
-
-	// edgeTo(idx, to = undefined) {
-	// 	if(to !== undefined) {
-	// 		this.node.edges = this.node.edges || [];
-	// 		this.node.edges[idx] = this.node.edges[idx] || [];
-
-	// 		this.node.edges[idx][1] = to.id;
-	// 	}
-	// 	return new Node(this.node.edges[idx][1], this.obj);
-	// }
 
 }
