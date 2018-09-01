@@ -31,5 +31,5 @@ export const save_file = (file_name = 'graphit.json') => {
 	anchor.dataset.downloadurl = ['application/json', anchor.download, anchor.href].join(':');
 	anchor.click();
 
-	console.log({save_at: Date()});
+	return Promise.resolve();
 };
