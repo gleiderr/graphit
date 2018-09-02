@@ -1,24 +1,17 @@
 import {Node} from './graphit.js';
-//import {show} from './facade.js';
 
-export const set_file = json => {
-	Node.json = json;
-};
-
-export const open_file = (event, show) => {
-	const reader = new FileReader();
-	reader.onload = (e) => {
-		try {
-			set_file(JSON.parse(e.target.result));
-			show();
-		} catch(exception) {
-			console.error(exception);
-			set_file({});
-			show();
-		}
-	};
-
-	reader.readAsText(event.target.files[0]);
+export const open_file = event => {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.onload = e => { 
+			try {
+				resolve(JSON.parse(e.target.result)); 
+			} catch(e) {
+				reject(e);
+			}
+		};
+		reader.readAsText(event.target.files[0]);
+	});
 };
 
 export const save_file = (file_name = 'graphit.json') => {

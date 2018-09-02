@@ -1,15 +1,14 @@
 import {expand, retract, apply, insert, remove, show } from './facade.js';
-import {open_file, save_file, set_file} from './file_io.js';//
+import {open_file, save_file} from './file_io.js';//
 
 const state = {};
 window.addEventListener('load', () => {
 	fetch('./bíblia/kja.json')
 		.then(response => response.json())
-		.then(set_file, ex => {
-			console.error(ex);
-			set_file({});
-		})
-		.then(show);
+		.then(show, (err) => {
+			console.error(err);
+			show({});
+		});
 });
 
 document.addEventListener('click', event => {
@@ -20,7 +19,11 @@ document.addEventListener('click', event => {
 	}
 
 	if(target.type == 'file') target.oninput = ev => {
-		open_file(ev, show);
+		open_file(ev)
+			.then(show, (err) => {
+			console.error(err);
+			show({});
+		});
 	};
 	
 	let input = document.getElementsByTagName('input')[0]; //review

@@ -128,7 +128,8 @@ export const remove = (child_el) => {
 	}
 };
 
-export function show() {
+export function show(json) {
+	Node.json = json;
 	set_new_id();
 
 	const g = document.createElement('div');
