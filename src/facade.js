@@ -1,8 +1,6 @@
 import {Node} from './graphit.js';
 
-//Função construída na primeira chamada
 let newId;
-
 const set_new_id = () => {
 	const generator = (function* () {
 		let lastKey = 0;
@@ -19,20 +17,19 @@ const set_new_id = () => {
 	newId = () => generator.next().value;
 };
 
-export const nodo_element = (id/*, idx = 0*/) => { //tornar essa função não pública
+const nodo_element = (id) => {
 	const node = new Node(id);
 
 	const container = document.createElement('div');
-	const nodo_element = document.createElement('div');
-	container.append(nodo_element);
+	const data_element = document.createElement('div');
+	container.append(data_element);
 
 	container.classList.add('Contêiner');
+	container.setAttribute('data-nodo', id);
 
-	if(node.nContent) nodo_element.classList.add('Expansível');
-	nodo_element.setAttribute('data-nodo', id);
-	nodo_element.contentEditable = 'true';
-	//nodo_element.setAttribute('data-idx', idx);
-	nodo_element.innerHTML = node.data || '';
+	if(node.nContent) data_element.classList.add('Expansível');
+	data_element.contentEditable = 'true';
+	data_element.innerHTML = node.data || '';
 
 	return container;
 };
@@ -107,23 +104,24 @@ export const insert = (origin_el, child_el = undefined, idx = undefined) => {
 	}
 };
 
-export const remove = (child_el) => {
-	const parent_el = child_el.parentElement.parentElement;
-	const parent = nodo_from_element(parent_el.firstChild),
-	      child = nodo_from_element(child_el);
-	const child_idx = Array.from(parent_el.childNodes).indexOf(child_el.parentElement);
+export const remove = (data_el) => {
+	const container_el = data_el.parentElement;
+	const parent_el = container_el.parentElement;
+	const parent = nodo_from_element(parent_el),
+	      child = nodo_from_element(container_el);
+	const child_idx = Array.from(parent_el.childNodes).indexOf(container_el);
 
 	//Remoção real
 	parent.delete(child_idx - 1);
 
 	//Remoção visual
-	const els = all_elements(parent.id);
-	for(let el of els) {
-		const container_el = el.parentElement;
+	const parents_el = all_elements(parent.id);
+	for(let parent_el of parents_el) {
+		const parent_el = el.parentElement;
 		if(parent.nContent == 0) {
-			container_el.parentElement.replaceChild(nodo_element(parent.id), container_el);
-		} else if(el.classList.contains('Expandido')) {
-			container_el.childNodes[child_idx].remove();
+			parent_el.parentElement.replaceChild(nodo_element(parent.id), parent_el);
+		} else if(parent_el.classList.contains('Expandido')) {
+			parent_el.childNodes[child_idx].remove();
 		}
 	}
 };

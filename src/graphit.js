@@ -28,7 +28,7 @@ export class Node {
 		return idx >= 0 && idx < this.nContent ? new Node(this.node.content[idx], this.obj) : null;
 	}
 
-	insert(node, idx = this.node.content.length) {
+	insert(node, idx = this.nContent) {
 		//[this.node] contains [node]
 		this.node.content = this.node.content || [];
 		this.node.content.splice(idx, 0, node.id);
