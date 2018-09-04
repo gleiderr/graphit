@@ -1,4 +1,6 @@
 import {Node} from './graphit.js';
+import {element_from_nodo, nodo_from_element, 
+		nodo_el, all_elements, replace_me} from './elements_factory.js';
 
 let newId;
 const set_new_id = () => {
@@ -17,113 +19,67 @@ const set_new_id = () => {
 	newId = () => generator.next().value;
 };
 
-const nodo_element = (id) => {
-	const node = new Node(id);
-
-	const container = document.createElement('div');
-	const data_element = document.createElement('div');
-	container.append(data_element);
-
-	container.classList.add('Contêiner');
-	container.setAttribute('data-nodo', id);
-
-	if(node.nContent) data_element.classList.add('Expansível');
-	data_element.contentEditable = 'true';
-	data_element.innerHTML = node.data || '';
-
-	return container;
-};
-
-const all_elements = id => {
-	return Array.from(document.querySelectorAll(`[data-nodo="${id}"]`));
-};
-
-const nodo_from_element = el => {
-	return new Node(el.getAttribute('data-nodo'));
-};
-
-const replace_nodo_element = (el) => {
-	new_element = nodo_element(element.getAttribute('data-nodo')/*,
-							   element.getAttribute('data-idx')*/);
-	document.replaceChild(new_element, el);
-
-	if(element.classList.contains('Expandido')) {
-		const childs = Array.from(el.childNodes);
-		for(let i = 1; i < childs.length; i++) 
-			replace_nodo_element(childs[i]);
-	}
-};
-
 export const expand = el => {
-	const node = new Node(el.getAttribute('data-nodo'));
-	const container = el.parentElement;
+	const node = nodo_from_element(el);
+	const container = nodo_el(el);
 	for (let i = 0; i < node.nContent; i++) {
-		container.appendChild(nodo_element(node.content(i).id));
+		container.appendChild(element_from_nodo(node.content(i).id));
 	}
 	el.classList.remove('Expansível');
 	el.classList.add('Expandido');
 };
 
+
 export const retract = el => {
-	const container = el.parentElement;
-	container.parentElement.replaceChild(nodo_element(el.getAttribute('data-nodo')), container);
+	const container = nodo_el(el);
+	const new_container = element_from_nodo(nodo_from_element(el).id);
+	replace_me(container, new_container);
 };
 
 export const apply = el => {
-	let node = new Node(el.getAttribute('data-nodo'));
-	node.data = el.innerHTML;
+	const data_el = nodo_el(el);
+	const node = nodo_from_element(data_el);
+	node.data = data_el.innerHTML;
 	
 	//Propagação
-	const elementos = document.querySelectorAll(`[data-nodo="${node.id}"]`);
-	for (let elemento of elementos) {
-		if(elemento != el) elemento.innerHTML = node.data;
-	}
+	all_elements(node.id)
+		.forEach(el => { if(el != data_el) el.innerHTML = node.data; });
 };
 
 export const insert = (origin_el, child_el = undefined, idx = undefined) => {
-	let parent_id = origin_el.getAttribute('data-nodo'); //Substituir por nodo_from_element()
-	let child, parent = new Node(parent_id);             //Substituir por nodo_from_element()
+	let child, parent = nodo_from_element(origin_el);
 	
 	//Inserção real
-	if(!child_el) { //novo elemento
-		child = new Node(newId());
-	} else { //elemento existente
-		child = new Node(child_el.getAttribute('data-nodo'));
-	}
+	child = child_el ? nodo_from_element(child_el) : new Node(newId());
 	parent.insert(child, idx);
 	
 	//Inserção visual
-	const els = Array.from(document.querySelectorAll(`[data-nodo="${parent_id}"]`)); //substituir por all_elements()
-	for (let el of els) {
-		const parent_el = el.parentElement;
-		if(el.classList.contains('Expandido')) {
-			parent_el.insertBefore(nodo_element(child.id, idx), el.childNodes[idx+1]);
+	all_elements(parent.id).forEach((parent_el) => {
+		if(parent_el.classList.contains('Expandido')) {
+			parent_el.insertBefore(element_from_nodo(child.id), parent_el.childNodes[idx+1]);
 		} else {
-			el.classList.add('Expansível'); //review replaceChild nodo_element
+			parent_el.classList.add('Expansível');
 		}
-	}
+	});
 };
 
 export const remove = (data_el) => {
-	const container_el = data_el.parentElement;
-	const parent_el = container_el.parentElement;
-	const parent = nodo_from_element(parent_el),
-	      child = nodo_from_element(container_el);
-	const child_idx = Array.from(parent_el.childNodes).indexOf(container_el);
+	const remove_el = data_el.parentElement;
+	const parent_el = remove_el.parentElement;
+	const remove_id = Array.from(parent_el.childNodes).indexOf(remove_el);
+	const parent = nodo_from_element(parent_el); 
 
 	//Remoção real
-	parent.delete(child_idx - 1);
+	parent.delete(remove_id - 1);
 
 	//Remoção visual
-	const parents_el = all_elements(parent.id);
-	for(let parent_el of parents_el) {
-		const parent_el = el.parentElement;
+	all_elements(parent.id).forEach((parent_el) => {
 		if(parent.nContent == 0) {
-			parent_el.parentElement.replaceChild(nodo_element(parent.id), parent_el);
+			replace_me(parent_el, element_from_nodo(parent.id));
 		} else if(parent_el.classList.contains('Expandido')) {
-			parent_el.childNodes[child_idx].remove();
+			parent_el.childNodes[remove_id].remove();
 		}
-	}
+	});
 };
 
 export function show(json) {
@@ -133,7 +89,7 @@ export function show(json) {
 	const g = document.createElement('div');
 	g.id = 'painel1';
 	g.classList.add('Painel');
-	g.appendChild(nodo_element(0));
-	
-	document.body.replaceChild(g, document.getElementById('painel1'));
+	g.appendChild(element_from_nodo(0));
+
+	replace_me(document.getElementById('painel1'), g);
 }
