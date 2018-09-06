@@ -1,5 +1,5 @@
 import {Node} from './graphit.js';
-import {element_from_nodo, nodo_from_element, 
+import {element_from_nodo, nodo_from_element, expansível, expandido,
 		nodo_el, all_elements, replace_me} from './elements_factory.js';
 
 let newId;
@@ -19,31 +19,49 @@ const set_new_id = () => {
 	newId = () => generator.next().value;
 };
 
-export const expand = el => {
-	const node = nodo_from_element(el);
-	const container = nodo_el(el);
-	for (let i = 0; i < node.nContent; i++) {
-		container.appendChild(element_from_nodo(node.content(i).id));
-	}
-	el.classList.remove('Expansível');
-	el.classList.add('Expandido');
-};
+/*const set_new_id = () => {
+	const generator = (function* () {
+		for(let nextKey = 0; true; nextKey++) {
+			if(!Node.json[nextKey.toString(36)]) {
+				console.log({nextKey, id: nextKey.toString(36)});
+				yield nextKey.toString(36);
+			}
+		}
+	})();
+	
+	newId = () => generator.next().value;
+};*/
 
+export const expand = el => {
+	const container = nodo_el(el);
+	if(expansível(el)) { //Expansão de elemento
+		const node = nodo_from_element(el);
+		for (let i = 0; i < node.nContent; i++) {
+			container.appendChild(element_from_nodo(node.content(i).id));
+		}
+		return true;
+	}
+	return false;
+};
 
 export const retract = el => {
 	const container = nodo_el(el);
-	const new_container = element_from_nodo(nodo_from_element(el).id);
-	replace_me(container, new_container);
+	if(expandido(el)) {
+		const new_container = element_from_nodo(nodo_from_element(el).id);
+		replace_me(container, new_container);
+		return true;
+	}
+	return false;
 };
 
 export const apply = el => {
-	const data_el = nodo_el(el);
-	const node = nodo_from_element(data_el);
-	node.data = data_el.innerHTML;
+	const container = nodo_el(el);
+	const node = nodo_from_element(container);
+	node.data = container.firstChild.innerHTML;
 	
 	//Propagação
 	all_elements(node.id)
-		.forEach(el => { if(el != data_el) el.innerHTML = node.data; });
+		.forEach(el => { if(el != container) el.firstChild.innerHTML = node.data; });
 };
 
 export const insert = (origin_el, child_el = undefined, idx = undefined) => {

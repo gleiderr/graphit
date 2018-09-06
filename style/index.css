@@ -20,17 +20,10 @@ button {
   overflow-y: auto;
 }
 
-body > .Contêiner {
-  padding-top: 8px;
-  overflow-y: auto;
-  max-height: 93vh;
-  box-sizing: border-box;
-}
-
 .Expansível, .Expandido {
 	cursor: pointer;
 }
-.Expansível::before {
+.Expansível > .Data::before {
 	content: '▸';
 	margin-left: -.8em;
 }
@@ -38,35 +31,18 @@ body > .Contêiner {
 	content: '▾';
 	margin-left: -.8em;
 }
-.Contêiner {
+[data-nodo] {
   border-left-width: 1px;
   border-left-style: dotted;
   padding-left: 1em;
-}
-.Aresta, .Nodo, .Contêiner {
   min-height: 1.2em;
   min-width: 1em;
 }
-.Aresta:empty, .Nodo:empty, .Contêiner:empty {
+.Data:empty {
   background: aliceblue;
-}
-.Referência > .Contêiner {
-  display: inline-block;
-}
-[contenteditable=true] {
-	/* background: aliceblue; */
 }
 [data-selecting=true] [data-nodo]:hover{
   background-color: darkorange;
-}
-#novo_nodo {
-    display: inline;
-    margin: 8px;
-    padding-left: 4px;
-    padding-right: 4px;
-    border: solid;
-    border-color: cadetblue;
-    border-width: 2px;
 }
 
 /*++Nodo[+]+-------------------------------------+

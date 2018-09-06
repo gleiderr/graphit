@@ -41,12 +41,7 @@ document.addEventListener('click', event => {
 });
 
 document.addEventListener('dblclick', event => {
-	const target = event.target;
-	if(target.classList.contains('Expansível')) { //Expansão de elemento
-		expand(target);
-	} else if(target.classList.contains('Expandido')) {
-		retract(target);
-	}
+	return expand(event.target) || retract(event.target);
 });
 
 window.addEventListener('keydown', event => {
@@ -98,5 +93,5 @@ document.addEventListener('focus', ev => {
 }, true);
 
 document.addEventListener('input', ev => {
-	if(ev.target.hasAttribute('data-nodo')) apply(ev.target);
+	apply(ev.target);
 }, true);
