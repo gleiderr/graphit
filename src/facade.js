@@ -1,6 +1,6 @@
 import {Node} from './graphit.js';
 import {element_from_nodo, nodo_from_element, expansível, expandido,
-		nodo_el, all_elements, replace_me} from './elements_factory.js';
+		nodo_el, all_elements, replace_me, remove_from} from './elements_factory.js';
 
 let newId;
 const set_new_id = () => {
@@ -81,23 +81,19 @@ export const insert = (origin_el, child_el = undefined, idx = undefined) => {
 	});
 };
 
-export const remove = (data_el) => {
-	const remove_el = data_el.parentElement;
-	const parent_el = remove_el.parentElement;
-	const remove_id = Array.from(parent_el.childNodes).indexOf(remove_el);
-	const parent = nodo_from_element(parent_el); 
+export const remove = el => {
+	const remove_el = nodo_el(el);
+	const parent_el = nodo_el(remove_el.parentElement);
+	if(parent_el) {
+		const remove_idx = Array.from(parent_el.childNodes).indexOf(remove_el);
+		const parent = nodo_from_element(parent_el); 
 
-	//Remoção real
-	parent.delete(remove_id - 1);
+		//Remoção real
+		parent.delete(remove_idx - 1);
 
-	//Remoção visual
-	all_elements(parent.id).forEach((parent_el) => {
-		if(parent.nContent == 0) {
-			replace_me(parent_el, element_from_nodo(parent.id));
-		} else if(parent_el.classList.contains('Expandido')) {
-			parent_el.childNodes[remove_id].remove();
-		}
-	});
+		//Remoção visual
+		remove_from(remove_idx, parent.id);
+	}
 };
 
 export function show(json) {

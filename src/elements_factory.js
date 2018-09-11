@@ -44,3 +44,13 @@ export const all_elements = id => {
 export const replace_me = (me_el, new_el) => {
 	me_el.parentElement.replaceChild(new_el, me_el);
 };
+
+export const remove_from = (idx, parent_id) => {
+	all_elements(parent_id).forEach((parent_el) => {
+		if(parent_el.childElementCount == 2) {
+			replace_me(parent_el, element_from_nodo(parent_id));
+		} else if(expandido(parent_el)) {
+			parent_el.childNodes[idx].remove();
+		}
+	});
+};

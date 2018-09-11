@@ -60,6 +60,7 @@ window.addEventListener('keydown', event => {
 			break;
 		case 'Delete': //Excluir nodo
 			if(event.ctrlKey) {
+				event.preventDefault();
 				remove(state.focused);
 			}
 			break;
