@@ -54,3 +54,11 @@ export const remove_from = (idx, parent_id) => {
 		}
 	});
 };
+
+export const insert_into = (child_id, parent_id) => {
+	all_elements(parent_id)
+		.filter(parent_el => expandido(parent_el))
+		.forEach((parent_el) => { 
+			parent_el.appendChild(element_from_nodo(child_id));
+		});
+};

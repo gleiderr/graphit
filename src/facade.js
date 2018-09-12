@@ -1,6 +1,6 @@
 import {Node} from './graphit.js';
-import {element_from_nodo, nodo_from_element, expansível, expandido,
-		nodo_el, all_elements, replace_me, remove_from} from './elements_factory.js';
+import {element_from_nodo, nodo_from_element, expansível, expandido, nodo_el,
+		all_elements, replace_me, remove_from, insert_into} from './elements_factory.js';
 
 let newId;
 const set_new_id = () => {
@@ -61,10 +61,12 @@ export const apply = el => {
 	
 	//Propagação
 	all_elements(node.id)
-		.forEach(el => { if(el != container) el.firstChild.innerHTML = node.data; });
+		.forEach(el => { 
+			if(el != container) el.firstChild.innerHTML = node.data; 
+		});
 };
 
-export const insert = (origin_el, child_el = undefined, idx = undefined) => {
+export const insert = (origin_el, child_el = undefined) => {
 	let child, parent = nodo_from_element(origin_el);
 	
 	//Inserção real
@@ -72,13 +74,7 @@ export const insert = (origin_el, child_el = undefined, idx = undefined) => {
 	parent.insert(child, idx);
 	
 	//Inserção visual
-	all_elements(parent.id).forEach((parent_el) => {
-		if(parent_el.classList.contains('Expandido')) {
-			parent_el.insertBefore(element_from_nodo(child.id), parent_el.childNodes[idx+1]);
-		} else {
-			parent_el.classList.add('Expansível');
-		}
-	});
+	insert_into(child.id, parent.id);
 };
 
 export const remove = el => {
