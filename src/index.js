@@ -2,6 +2,35 @@ import {expand, retract, apply, insert, remove, show } from './facade.js';
 import {open_file, save_file} from './file_io.js';//
 
 const state = {};
+
+const state_machine = new class {
+	constructor() {
+		this.focused = [];
+	}
+
+	focus(el) {
+		if(this.focused.includes(el)) {
+			this.blur(el);
+		} else {
+			this.focused.push(el);
+			el.style.outlineColor = 'orange';
+			el.style.outlineWidth = '5px';
+			el.style.outlineStyle = 'auto';
+		}
+	}
+
+	blur(el) {
+		this.focused = this.focused.filter((element) => el != element);
+		el.style.outlineColor = null;
+		el.style.outlineWidth = null;
+		el.style.outlineStyle = null;
+	}
+
+	blur_all() {
+		this.focused.forEach(this.blur, this);
+	}
+}();
+
 window.addEventListener('load', () => {
 	fetch('./bíblia/kja.json')
 		.then(response => response.json())
@@ -13,21 +42,21 @@ window.addEventListener('load', () => {
 
 document.addEventListener('click', event => {
 	const target = event.target;
-	if(state.state == 'inserting' && target.hasAttribute('data-nodo')) {
+	/*if(state.state == 'inserting' && target.hasAttribute('data-nodo')) {
 	   	state.selected.push(target);
 	   	target.style.background = 'peachpuff';
-	}
+	}*/
 
-	if(target.type == 'file') target.oninput = ev => {
-		open_file(ev)
-			.then(show, (err) => {
-			console.error(err);
-			show({});
-		});
-	};
-	
-	let input = document.getElementsByTagName('input')[0]; //review
-	if(target.type == 'submit') {
+	if(target.type == 'file') {
+		target.oninput = ev => {
+			open_file(ev)
+				.then(show, (err) => {
+					console.error(err);
+					show({});
+			});
+		};
+	} else if (target.type == 'submit') {
+		let input = document.getElementsByTagName('input')[0]; //review
 		save_file(input.files[0] && input.files[0].name)
 			.then(() => {
 				let date = new Date(),
@@ -37,6 +66,9 @@ document.addEventListener('click', event => {
 
 				document.getElementById('save_at').innerText = 'Salvo às: ' + `${h}:${m}:${s}`;
 			});
+	} else if (target.hasAttribute('contentEditable')) {
+		if(event.ctrlKey) state_machine.focus(target);
+		else state_machine.blur_all();
 	}
 });
 
@@ -65,6 +97,8 @@ window.addEventListener('keydown', event => {
 			}
 			break;
 		case 'Enter':
+			//Ctrl + Enter insere novo nodo no nodo focado
+			//Ctrl + Shift + Enter insere nodo existente no nodo focado
 			if(state.state == 'inserting'){
 				event.preventDefault();
 				if(state.selected.length == 1) insert(state.selected[0]);
