@@ -5,29 +5,21 @@ const state = {};
 
 const state_machine = new class {
 	constructor() {
-		this.focused = [];
+		this.selected = [];
 	}
 
-	focus(el) {
-		if(this.focused.includes(el)) {
-			this.blur(el);
+	select(el) {
+		if(this.selected.includes(el)) {
+			this.deselect(el);
 		} else {
-			this.focused.push(el);
-			el.style.outlineColor = 'orange';
-			el.style.outlineWidth = '5px';
-			el.style.outlineStyle = 'auto';
+			this.selected.push(el);
+			el.style.background = 'peachpuff';
 		}
 	}
 
-	blur(el) {
-		this.focused = this.focused.filter((element) => el != element);
-		el.style.outlineColor = null;
-		el.style.outlineWidth = null;
-		el.style.outlineStyle = null;
-	}
-
-	blur_all() {
-		this.focused.forEach(this.blur, this);
+	deselect(blur_el) {
+		this.selected = this.selected.filter((el) => blur_el != el);
+		blur_el.style.background = null;
 	}
 }();
 
@@ -42,10 +34,6 @@ window.addEventListener('load', () => {
 
 document.addEventListener('click', event => {
 	const target = event.target;
-	/*if(state.state == 'inserting' && target.hasAttribute('data-nodo')) {
-	   	state.selected.push(target);
-	   	target.style.background = 'peachpuff';
-	}*/
 
 	if(target.type == 'file') {
 		target.oninput = ev => {
@@ -67,14 +55,11 @@ document.addEventListener('click', event => {
 				document.getElementById('save_at').innerText = 'Salvo às: ' + `${h}:${m}:${s}`;
 			});
 	} else if (target.hasAttribute('contentEditable')) {
-		if(event.ctrlKey) state_machine.focus(target);
-		else state_machine.blur_all();
+		if(event.ctrlKey) state_machine.select(target);
 	}
 });
 
-document.addEventListener('dblclick', event => {
-	return expand(event.target) || retract(event.target);
-});
+document.addEventListener('dblclick', event => expand(event.target) || retract(event.target));
 
 window.addEventListener('keydown', event => {
 	//console.log(event.key);
@@ -93,7 +78,7 @@ window.addEventListener('keydown', event => {
 		case 'Delete': //Excluir nodo
 			if(event.ctrlKey) {
 				event.preventDefault();
-				remove(state.focused);
+				state_machine.selected.forEach(remove);
 			}
 			break;
 		case 'Enter':
@@ -113,12 +98,7 @@ window.addEventListener('keydown', event => {
 			}
 			break;
 		case 'Escape':
-			//Encerra seleção
-			if(state.selected) {
-				for(let i = 0; i < state.selected.length; i++) state.selected[i].style.background = null;
-				document.body.setAttribute('data-selecting', 'false');
-				state.state = state.selected = undefined;
-			} 
+			state_machine.selected.forEach((el) => state_machine.deselect(el));
 			break;
 	}
 });
