@@ -37,6 +37,16 @@ export const nodo_from_element = el => {
 	return new Node(el.getAttribute('data-nodo'));
 };
 
+const classify = (el) => {
+	const node = nodo_from_element(el);
+
+	if(node.nContent) el.classList.add('Expansível');
+	el.setAttribute('data-nodo', node.id);
+
+	el.firstChild.classList.add('Data');
+	el.firstChild.contentEditable = 'true';
+};
+
 export const all_elements = id => {
 	return Array.from(document.querySelectorAll(`[data-nodo="${id}"]`));
 };
@@ -56,9 +66,13 @@ export const remove_from = (idx, parent_id) => {
 };
 
 export const insert_into = (child_id, parent_id) => {
-	all_elements(parent_id)
-		.filter(parent_el => expandido(parent_el))
-		.forEach((parent_el) => { 
-			parent_el.appendChild(element_from_nodo(child_id));
+	const all_parents = all_elements(parent_id);
+	all_parents.forEach((parent_el) => { 
+			if (expandido(parent_el)) {
+				parent_el.appendChild(element_from_nodo(child_id));
+			} else {
+				classify(parent_el);
+			}
 		});
+
 };

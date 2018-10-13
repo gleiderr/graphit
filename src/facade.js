@@ -68,6 +68,7 @@ export const apply = el => {
 
 export const insert = (origin_el, child_el = undefined) => {
 	let child, parent = nodo_from_element(origin_el);
+	let idx;
 	
 	//Inserção real
 	child = child_el ? nodo_from_element(child_el) : new Node(newId());

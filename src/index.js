@@ -21,6 +21,10 @@ const state_machine = new class {
 		this.selected = this.selected.filter((el) => blur_el != el);
 		blur_el.style.background = null;
 	}
+
+	deselect_all() {
+		this.selected.forEach((el) => this.deselect(el));
+	}
 }();
 
 window.addEventListener('load', () => {
@@ -82,23 +86,19 @@ window.addEventListener('keydown', event => {
 			}
 			break;
 		case 'Enter':
-			//Ctrl + Enter insere novo nodo no nodo focado
-			//Ctrl + Shift + Enter insere nodo existente no nodo focado
-			if(state.state == 'inserting'){
+			//Ctrl + Enter insere novos nodos no nodo focado
+			if(event.ctrlKey) {
 				event.preventDefault();
-				if(state.selected.length == 1) insert(state.selected[0]);
-				else for(let i = 1; i < state.selected.length; i++) {
-					insert(state.selected[0], state.selected[i]);
-				}
-				
-				//Encerra seleção
-				for(let i = 0; i < state.selected.length; i++) state.selected[i].style.background = null;
-				document.body.setAttribute('data-selecting', 'false');
-				state.state = state.selected = undefined;
+				if(state_machine.selected.length == 0) {
+					insert(event.target);
+				} else state_machine.selected.forEach((el) => {
+					insert(event.target, el);
+					state_machine.deselect(el);
+				});
 			}
 			break;
 		case 'Escape':
-			state_machine.selected.forEach((el) => state_machine.deselect(el));
+			state_machine.deselect_all();
 			break;
 	}
 });
