@@ -47,6 +47,43 @@ export class Node {
 
 }
 
+const base_model = {
+	nodes: {
+		'#0': {},
+		'#1': {},
+		'#2': {},
+		'#3': {},
+		'#4': {}
+	},
+	edges: {
+		from: {
+			'#0': [
+				['#0', ['#3', '#4'],],
+				['#1']
+			],
+			'#1': {
+				'#0': []
+			},
+			'#2': {},
+			'#3': {},
+			'#4': {}		
+		}
+	},
+	adjacent_lists: {
+		'#0': [
+			'#0',
+			'#1',
+			'#2',
+			'#3',
+			'#4'
+		],
+		'#1': [],
+		'#2': [],
+		'#3': [],
+		'#4': []
+	}
+};
+
 /* Manipula propriedades do nodo na base. Fora da base é responsabilidade do
  * usuário da biblioteca
  */
