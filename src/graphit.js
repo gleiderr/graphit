@@ -46,3 +46,61 @@ export class Node {
 	}
 
 }
+
+/* Manipula propriedades do nodo na base. Fora da base é responsabilidade do
+ * usuário da biblioteca
+ */
+class Node { 
+
+	constructor(id, graphit) { 
+		this.id = id;
+		this.graphit = graphit;
+		this.obj = graphit.get(id);
+	}
+
+	set(field, value) { //Ao atribuir valor sincronizar com base
+		this.obj[field] = value;
+		return this.graphit.set(this.obj, this.id);
+	}
+
+	get(field) { //A base é responsável por manter os valores sincronizados
+		return Promise.resolve(this.obj[field]);
+	}
+
+	ref(edge, node, idx = this.obj[edge].length || 0) {
+		return this.graphit.set(this.obj, this.id);
+	}
+}
+
+//Define operações com a base
+class Graphit {
+
+	constructor(objson_newId, on_get, on_set, on_edge) {
+		this.newId = newId;
+	}
+
+	//Recupera nodo da base
+	get(id) {
+		return Promise.resolve(new Node(id, this));
+	}
+
+	//Define dados na base
+	set(obj, id = Graphit.newId()) {
+		return Promise.resolve();
+	}
+
+	//Remove dados da base
+	delete(id) {
+		return Promise.resolve();
+	}
+
+	exist(id) { //Verifica se existe id na base
+		return Promise.resolve();
+	}
+
+	set_edge(from, to, edge, idx) { //Aresta deve ser desenvolvida como um nodo enrustido
+
+	}
+
+	remove_edge()
+}
