@@ -1,4 +1,78 @@
-export class Node {
+const base_model = {
+	nodes: {
+		'#0': 'Qualquer texto 0',
+		'#1': 'Qualquer texto 1',
+		'#2': 'Qualquer texto 2',
+		'#3': 'Qualquer texto 3',
+		'#4': 'Qualquer texto 4'
+	},
+	adjacent_lists: {
+		'#0': [{ to: '#0', any: ''}, { to: '#1', any: ''}, { to: '#2', any: ''}, { to: '#3', any: ''}, { to: '#4', any: ''}],
+		'#1': [],
+		'#2': [],
+		'#3': [],
+		'#4': []
+	}
+};
+
+/* Manipula propriedades do nodo na base. Fora da base é responsabilidade do
+ * usuário da biblioteca
+ */
+class Node { 
+
+	constructor(id, obj, graphit) { 
+		this.id = id;
+		this.obj = obj;
+		this.graphit = graphit;
+	}
+
+	sync() { //Atualiza nodo na base
+		return this.graphit.set(this);
+	}
+
+	adjacentList() { //Recupera lista de adjacências atualizada
+		return this.graphit.adjacentList(this.id);
+	}
+}
+
+//Define operações com a base
+class Graphit {
+
+	constructor(newId, set, get, on_edge) {
+		this.f_newId = newId;
+		this.f_set = set;
+		this.f_get = get;
+	}
+
+	//Define dados na base
+	set(node) {
+		if(!(node instanceof Node)) node = new Node(this.newId(), node, this);
+		return this.f_set(node);
+	}
+
+	//Recupera nodo da base
+	get(id) {
+		return this.f_get();
+	}
+
+
+	//Remove dados da base
+	delete(id) {
+		return Promise.resolve();
+	}
+
+	exist(id) { //Verifica se existe id na base
+		return Promise.resolve();
+	}
+
+	set_edge(from, to, edge, idx) { //Aresta deve ser desenvolvida como um nodo enrustido
+
+	}
+
+	remove_edge()
+}
+
+/*export class Node {
 	static set json(json) {
 		Node.prototype.obj = json;
 	}
@@ -45,99 +119,4 @@ export class Node {
 		content_of.splice(content_of.indexOf(this.id), 1);
 	}
 
-}
-
-const base_model = {
-	nodes: {
-		'#0': {},
-		'#1': {},
-		'#2': {},
-		'#3': {},
-		'#4': {}
-	},
-	edges: {
-		from: {
-			'#0': [
-				['#0', ['#3', '#4'],],
-				['#1']
-			],
-			'#1': {
-				'#0': []
-			},
-			'#2': {},
-			'#3': {},
-			'#4': {}		
-		}
-	},
-	adjacent_lists: {
-		'#0': [
-			'#0',
-			'#1',
-			'#2',
-			'#3',
-			'#4'
-		],
-		'#1': [],
-		'#2': [],
-		'#3': [],
-		'#4': []
-	}
-};
-
-/* Manipula propriedades do nodo na base. Fora da base é responsabilidade do
- * usuário da biblioteca
- */
-class Node { 
-
-	constructor(id, graphit) { 
-		this.id = id;
-		this.graphit = graphit;
-		this.obj = graphit.get(id);
-	}
-
-	set(field, value) { //Ao atribuir valor sincronizar com base
-		this.obj[field] = value;
-		return this.graphit.set(this.obj, this.id);
-	}
-
-	get(field) { //A base é responsável por manter os valores sincronizados
-		return Promise.resolve(this.obj[field]);
-	}
-
-	ref(edge, node, idx = this.obj[edge].length || 0) {
-		return this.graphit.set(this.obj, this.id);
-	}
-}
-
-//Define operações com a base
-class Graphit {
-
-	constructor(objson_newId, on_get, on_set, on_edge) {
-		this.newId = newId;
-	}
-
-	//Recupera nodo da base
-	get(id) {
-		return Promise.resolve(new Node(id, this));
-	}
-
-	//Define dados na base
-	set(obj, id = Graphit.newId()) {
-		return Promise.resolve();
-	}
-
-	//Remove dados da base
-	delete(id) {
-		return Promise.resolve();
-	}
-
-	exist(id) { //Verifica se existe id na base
-		return Promise.resolve();
-	}
-
-	set_edge(from, to, edge, idx) { //Aresta deve ser desenvolvida como um nodo enrustido
-
-	}
-
-	remove_edge()
-}
+}*/
