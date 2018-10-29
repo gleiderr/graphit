@@ -4,6 +4,24 @@
 	<meta charset="UTF-16">
 	<link rel="shortcut icon" type="image/png" href="/favicon.png"/>
 	<title>Graphit</title>
+
+	<script src="https://www.gstatic.com/firebasejs/5.5.6/firebase.js"></script>
+	<script type="text/javascript">
+		let config = {
+			apiKey: "AIzaSyBlGhyZoHf-EdFg9l2T51mHEFt4wRtxgU8",
+			authDomain: "generalbits-dd6b4.firebaseapp.com",
+			databaseURL: "https://generalbits-dd6b4.firebaseio.com",
+			projectId: "generalbits-dd6b4",
+			storageBucket: "generalbits-dd6b4.appspot.com",
+			messagingSenderId: "756325677587"
+		};
+		// Initialize Firebase
+		let fb = firebase.initializeApp(config);
+	</script>
+	<!-- <script src="https://www.gstatic.com/firebasejs/5.5.6/firebase-database.js"></script> -->
+	<script src="./src/graphit.js"></script>
+	<script type="text/javascript" src="./src/graphit-firebase.js"></script>
+
 	<link rel="stylesheet" type="text/css" href="./style/index.css">
 </head>
 <body>
@@ -13,6 +31,10 @@
 		<span id='save_at'></span>
 	</div>
 	<div id="painel1" class="Painel"></div>
-	<script type="module" src="./src/index.js"></script>
+	<script type="text/javascript">
+		let graphit = new Graphit_Firebase(fb);
+		console.log(graphit);
+	</script>
+	<!-- <script type="module" src="./src/index.js"></script> -->
 </body>
 </html>

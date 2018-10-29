@@ -7,7 +7,7 @@ const base_model = {
 		'#4': 'Qualquer texto 4'
 	},
 	adjacent_lists: {
-		'#0': [{ to: '#0', any: ''}, { to: '#1', any: ''}, { to: '#2', any: ''}, { to: '#3', any: ''}, { to: '#4', any: ''}],
+		'#0': [{ to: '#0', data: {}}, { to: '#1', data: {}}, { to: '#2', data: {}}, { to: '#3', data: {}}, { to: '#4', data: {}}],
 		'#1': [],
 		'#2': [],
 		'#3': [],
@@ -27,50 +27,36 @@ class Node {
 	}
 
 	sync() { //Atualiza nodo na base
-		return this.graphit.set(this);
+		return this.graphit.setNode(this);
 	}
 
-	adjacentList() { //Recupera lista de adjacências atualizada
+	get adjacentList() { //Recupera lista de [Edges] atualizada
 		return this.graphit.adjacentList(this.id);
 	}
 }
 
-//Define operações com a base
-class Graphit {
+//O usuário define o formato da aresta
+class Adjacent_List {
 
-	constructor(newId, set, get, on_edge) {
-		this.f_newId = newId;
-		this.f_set = set;
-		this.f_get = get;
+	constructor(from, list, graphit) {
+		this.from = from;
+		this.list = list;
+		this.graphit = graphit;
 	}
 
-	//Define dados na base
-	set(node) {
-		if(!(node instanceof Node)) node = new Node(this.newId(), node, this);
-		return this.f_set(node);
+	//Atualiza lista na base
+	sync() { return this.graphit.setAdjacentList(this); }
+
+	insert(node, data, idx) {
+		this.list.splice(idx, 0, { to: node.id, data});
 	}
 
-	//Recupera nodo da base
-	get(id) {
-		return this.f_get();
+	remove(idx) {
+		return this.list.splice(idx, 1)[0];
 	}
-
-
-	//Remove dados da base
-	delete(id) {
-		return Promise.resolve();
-	}
-
-	exist(id) { //Verifica se existe id na base
-		return Promise.resolve();
-	}
-
-	set_edge(from, to, edge, idx) { //Aresta deve ser desenvolvida como um nodo enrustido
-
-	}
-
-	remove_edge()
 }
+
+
 
 /*export class Node {
 	static set json(json) {
