@@ -6,7 +6,7 @@ const base_model = {
 		'#3': 'Qualquer texto 3',
 		'#4': 'Qualquer texto 4'
 	},
-	adjacent_lists: {
+	adjacency_lists: {
 		'#0': [{ to: '#0', data: {}}, { to: '#1', data: {}}, { to: '#2', data: {}}, { to: '#3', data: {}}, { to: '#4', data: {}}],
 		'#1': [],
 		'#2': [],
@@ -30,8 +30,8 @@ class Node {
 		return this.graphit.setNode(this);
 	}
 
-	get adjacentList() { //Recupera lista de [Edges] atualizada
-		return this.graphit.adjacentList(this.id);
+	get adjacencyList() { //Recupera lista de [Edges] atualizada
+		return this.graphit.adjacencyList(this.id);
 	}
 }
 
@@ -45,7 +45,7 @@ class Adjacent_List {
 	}
 
 	//Atualiza lista na base
-	sync() { return this.graphit.setAdjacentList(this); }
+	sync() { return this.graphit.setAdjacencyList(this); }
 
 	insert(node, data, idx) {
 		this.list.splice(idx, 0, { to: node.id, data});

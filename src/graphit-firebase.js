@@ -12,19 +12,28 @@ class Graphit_Firebase {
 
 	//Define dados na base
 	setNode(node) {
-		if(!(node instanceof Node)) {
-			node = new Node(this.newId(), node, this);
-		}
-
-		return this.nodesRef.child(node.id).set(node.obj);
+		return new Promise((resolve, reject) => {
+			if(!(node instanceof Node)) {
+				node = new Node(this.newId(), node, this);
+			}
+			
+			this.nodesRef.child(node.id).set(node.obj)
+				.then(() => resolve(node))
+				.catch((error) => reject(error));
+		});
 	}
 
-	setAdjacentList(adj, from) {
-		if(!(adj instanceof Adjacent_List)) {
-			adj = new Adjacent_List(from, adj, this);
-		}
+	//Define dados na base
+	setAdjacencyList(adj, from) {
+		return new Promise((resolve, reject) => {
+			if(!(adj instanceof Adjacent_List)) {
+				adj = new Adjacent_List(from, adj, this);
+			}
 
-		return this.adjListsRef.child(adj.from).set(adj.list);
+			this.adjListsRef.child(adj.from).set(adj.list)
+				.then(() => resolve(adj))
+				.catch((error) => reject(error));
+		});
 	}
 
 	//Recupera nodo da base
