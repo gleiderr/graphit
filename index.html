@@ -34,6 +34,25 @@
 	<script type="text/javascript">
 		let graphit = new Graphit_Firebase(fb);
 		console.log({graphit});
+
+		let zero, p;
+		let g = graphit;
+		//let p = g.setNode('teste').then((node) => n = node);
+		f();
+
+		async function f() {
+			let list = [], aux;
+			for(let i = 0; i < 5; i++) {
+				let ant = aux || null;
+				console.log(aux = await g.node({id: i, obj: `teste[${i}]`}));
+				console.log(await g.adj({from_id: i}));
+				/*list.push({to: aux.id, data: ant && ant.id});
+				for(let j = i; j <= i; j++) {
+					console.log('\t', await g.adj({from_id: j, list}));
+				}*/
+			}
+		}
+
 	</script>
 	<!-- <script type="module" src="./src/index.js"></script> -->
 </body>

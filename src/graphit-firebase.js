@@ -2,48 +2,62 @@
 class Graphit_Firebase {
 
 	constructor(firebase) {
+		this.database = firebase.database();
 		this.nodesRef = firebase.database().ref('nodes');
-		this.adjListsRef = firebase.database().ref('adjacent_lists');
+		this.adjRef = firebase.database().ref('adjacent_lists');
 	}
 
-	newId() {
-		return this.nodesRef.push().key;
-	}
-
-	//Define dados na base
-	setNode(node) {
+	node({id, obj} = {}) {
+		const g = this;
 		return new Promise((resolve, reject) => {
-			if(!(node instanceof Node)) {
-				node = new Node(this.newId(), node, this);
+			if(id == undefined) {
+				id = this.nodesRef.push().key; //define novo id na base
 			}
-			
-			this.nodesRef.child(node.id).set(node.obj)
-				.then(() => resolve(node))
-				.catch((error) => reject(error));
+
+			if(obj == undefined) { //recupera obj da base
+				this.nodesRef.child(id).on('value', 
+					(snapshot) => resolve(new GNode(id, snapshot.val(), g)),
+					(error) => reject(error));
+			} else { //atribui obj na base
+				this.nodesRef.child(id).set(obj)
+					.then(() => resolve(new GNode(id, obj, g)))
+					.catch((error) => reject(error));
+			}
 		});
 	}
 
-	//Define dados na base
-	setAdjacencyList(adj, from) {
+	adj({from_id, list}) {
+		const g = this;
 		return new Promise((resolve, reject) => {
-			if(!(adj instanceof Adjacent_List)) {
-				adj = new Adjacent_List(from, adj, this);
+			if(from_id == undefined) {
+				reject(new Error('Defina from_id antes lista de adjacência!'));
 			}
 
-			this.adjListsRef.child(adj.from).set(adj.list)
-				.then(() => resolve(adj))
-				.catch((error) => reject(error));
+			if(list == undefined) { //recupera list da base
+				this.adjRef.child(from_id).on('value', 
+					(snapshot) => {
+						resolve(new AdjacencyList(from_id, snapshot.val(), g));
+					},
+					(error) => {
+						reject(error);
+					});
+			} else { //atribui list na base
+				this.adjRef.child(from_id).set(list)
+					.then(() => resolve(new AdjacencyList(from_id, list, g)))
+					.catch((error) => reject(error));
+			}
 		});
-	}
-
-	//Recupera nodo da base
-	get(id, on) {
-		return this.nodesRef.child(id).on('value', on);
 	}
 
 	//Remove dados da base
-	remove(node) {
-		return this.nodesRef.child(node.id).remove();
-		return this.adjListsRef.child(node.id).remove();
+	remove(id) {
+		let aux = {};
+		aux['/' + this.nodesRef.key + '/' + id] = null;
+		aux['/' + this.adjRef.key + '/' + id] = null;
+
+		//aux[this.nodesRef.key][id] = null;
+		//aux[this.adjRef.key][id] = null;
+				
+		this.database.ref().update(aux);
 	}	
 }

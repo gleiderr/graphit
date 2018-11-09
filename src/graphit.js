@@ -18,7 +18,7 @@ const base_model = {
 /* Manipula propriedades do nodo na base. Fora da base é responsabilidade do
  * usuário da biblioteca
  */
-class Node { 
+class GNode { 
 
 	constructor(id, obj, graphit) { 
 		this.id = id;
@@ -26,34 +26,36 @@ class Node {
 		this.graphit = graphit;
 	}
 
-	sync() { //Atualiza nodo na base
-		return this.graphit.setNode(this);
+	/*sync() { //Atualiza nodo na base
+		return this.graphit.node(this);
 	}
 
 	get adjacencyList() { //Recupera lista de [Edges] atualizada
-		return this.graphit.adjacencyList(this.id);
-	}
+		return this.graphit.adj({from_id: this.id});
+	}*/
 }
 
 //O usuário define o formato da aresta
-class Adjacent_List {
+class AdjacencyList {
 
-	constructor(from, list, graphit) {
-		this.from = from;
-		this.list = list;
+	constructor(from_id, list, graphit) {
+		this.from_id = from_id;
+		this.list = list || [];
 		this.graphit = graphit;
 	}
 
 	//Atualiza lista na base
-	sync() { return this.graphit.setAdjacencyList(this); }
+	/*sync() { return this.graphit.adj(this); }
 
-	insert(node, data, idx) {
-		this.list.splice(idx, 0, { to: node.id, data});
+	set(node, node_data, idx) {
+		idx = idx >= 0 ? idx : this.list.length;
+		this.list.splice(idx, 0, { to: node.id, data: node_data.id});
+		this.sync();
 	}
 
 	remove(idx) {
 		return this.list.splice(idx, 1)[0];
-	}
+	}*/
 }
 
 
