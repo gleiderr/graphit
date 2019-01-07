@@ -1,110 +1,40 @@
+/* Estrutura padrão da base de dados do Graphit.
+
 const base_model = {
-	nodes: {
-		'#0': 'Qualquer texto 0',
-		'#1': 'Qualquer texto 1',
-		'#2': 'Qualquer texto 2',
-		'#3': 'Qualquer texto 3',
-		'#4': 'Qualquer texto 4'
-	},
-	adjacency_lists: {
-		'#0': [{ to: '#0', data: {}}, { to: '#1', data: {}}, { to: '#2', data: {}}, { to: '#3', data: {}}, { to: '#4', data: {}}],
-		'#1': [],
-		'#2': [],
-		'#3': [],
-		'#4': []
-	}
-};
+  nodes: {
+    '#0': 'Qualquer texto 0',
+    '#1': 'Qualquer texto 1',
+    '#2': 'Qualquer texto 2',
+    '#3': 'Qualquer texto 3',
+    '#4': 'Qualquer texto 4'
+  },
+  adjacency_lists: {
+    '#0': [{ to: '#0', data: {}}, { to: '#1', data: {}}, { to: '#2', data: {}}, { to: '#3', data: {}}, { to: '#4', data: {}}],
+    '#1': [],
+    '#2': [],
+    '#3': [],
+    '#4': []
+  }
+};*/
 
-/* Manipula propriedades do nodo na base. Fora da base é responsabilidade do
- * usuário da biblioteca
+/* Define a estrutura padrão de um Nodo. Somente o [id] e [obj] são gravados 
+ * na base de dados;
  */
-class GNode { 
-
-	constructor(id, obj, graphit) { 
-		this.id = id;
-		this.obj = obj;
-		this.graphit = graphit;
-	}
-
-	/*sync() { //Atualiza nodo na base
-		return this.graphit.node(this);
-	}
-
-	get adjacencyList() { //Recupera lista de [Edges] atualizada
-		return this.graphit.adj({from_id: this.id});
-	}*/
+class GNode {
+  constructor(id, obj, graphit) {
+    this.id = id;
+    this.obj = obj;
+    this.graphit = graphit;
+  }
 }
 
-//O usuário define o formato da aresta
+/* Define a estrutura padrão de uma lista de adjacências. Somente [id] e [list]
+ * são gravados na base de dados.
+ */
 class AdjacencyList {
-
-	constructor(from_id, list, graphit) {
-		this.from_id = from_id;
-		this.list = list || [];
-		this.graphit = graphit;
-	}
-
-	//Atualiza lista na base
-	/*sync() { return this.graphit.adj(this); }
-
-	set(node, node_data, idx) {
-		idx = idx >= 0 ? idx : this.list.length;
-		this.list.splice(idx, 0, { to: node.id, data: node_data.id});
-		this.sync();
-	}
-
-	remove(idx) {
-		return this.list.splice(idx, 1)[0];
-	}*/
+  constructor(from_id, list, graphit) {
+    this.from_id = from_id;
+    this.list = list || [];
+    this.graphit = graphit;
+  }
 }
-
-
-
-/*export class Node {
-	static set json(json) {
-		Node.prototype.obj = json;
-	}
-
-	static get json() {
-		return Node.prototype.obj;
-	}
-
-	constructor (id) {
-		this.id = id;
-		this.node = this.obj[id] || (this.obj[id] = {});
-	}
-
-	get data() {
-		return this.node.data;
-	}
-
-	set data(data) {
-		this.node.data = data;
-	}
-
-	get nContent() {
-		return (this.node.content && this.node.content.length) || 0;
-	}
-
-	content(idx) {
-		return idx >= 0 && idx < this.nContent ? new Node(this.node.content[idx], this.obj) : null;
-	}
-
-	insert(node, idx = this.nContent) {
-		//[this.node] contains [node]
-		this.node.content = this.node.content || [];
-		this.node.content.splice(idx, 0, node.id);
-
-		//[node] is content_of [this.node]
-		this.obj[node.id].content_of = this.obj[node.id].content_of || [];
-		this.obj[node.id].content_of.push(this.id);
-	}
-
-	delete(idx) {
-		const deleted_id = this.obj[this.id].content.splice(idx, 1)[0];
-		
-		const content_of = this.obj[deleted_id].content_of;
-		content_of.splice(content_of.indexOf(this.id), 1);
-	}
-
-}*/
