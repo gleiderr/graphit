@@ -1,0 +1,27 @@
+{
+  "name": "graphit",
+  "version": "0.5.0",
+  "description": "App for Bible study.",
+  "main": "index.js",
+  "dependencies": {
+    "connect": "^3.6.6",
+    "server-static": "^2.0.5"
+  },
+  "devDependencies": {
+    "jasmine": "^3.3.1"
+  },
+  "scripts": {
+    "test": "npm test",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gleiderr/graphit.git"
+  },
+  "author": "gleiderr",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gleiderr/graphit/issues"
+  },
+  "homepage": "https://github.com/gleiderr/graphit#readme"
+}
