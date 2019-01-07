@@ -1,10 +1,10 @@
-//Define operações com a base
+//Define operações com a base de dados
 class Graphit_Firebase {
 
-	constructor(firebase) {
-		this.database = firebase.database();
-		this.nodesRef = firebase.database().ref('nodes');
-		this.adjRef = firebase.database().ref('adjacent_lists');
+	constructor(database) {
+		this.database = database;
+		this.nodesRef = database.ref('nodes');
+		this.adjRef = database.ref('adjacent_lists');
 	}
 
 	node({id, obj} = {}) {
