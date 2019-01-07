@@ -1,59 +1,63 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<meta charset="UTF-16">
-	<link rel="shortcut icon" type="image/png" href="/favicon.png"/>
-	<title>Graphit</title>
 
-	<script src="https://www.gstatic.com/firebasejs/5.5.6/firebase.js"></script>
-	<script type="text/javascript">
-		let config = {
-			apiKey: "AIzaSyBlGhyZoHf-EdFg9l2T51mHEFt4wRtxgU8",
-			authDomain: "generalbits-dd6b4.firebaseapp.com",
-			databaseURL: "https://generalbits-dd6b4.firebaseio.com",
-			projectId: "generalbits-dd6b4",
-			storageBucket: "generalbits-dd6b4.appspot.com",
-			messagingSenderId: "756325677587"
-		};
-		// Initialize Firebase
-		let fb = firebase.initializeApp(config);
-	</script>
-	<!-- <script src="https://www.gstatic.com/firebasejs/5.5.6/firebase-database.js"></script> -->
-	<script src="./src/graphit.js"></script>
-	<script type="text/javascript" src="./src/graphit-firebase.js"></script>
+  <head>
+    <meta charset="UTF-16">
+    <link rel="shortcut icon" type="image/png" href="/favicon.png" />
+    <title>Graphit</title>
 
-	<link rel="stylesheet" type="text/css" href="./style/index.css">
-</head>
-<body>
-	<div class="Cabeçalho">
-		<input type="file" accept=".json">
-		<button type="submit">💾 salvar</button>
-		<span id='save_at'></span>
-	</div>
-	<div id="painel1" class="Painel"></div>
-	<script type="text/javascript">
-		let graphit = new Graphit_Firebase(fb);
-		console.log({graphit});
+    <script src="https://www.gstatic.com/firebasejs/5.7.2/firebase-app.js"></script>
+    <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyDw44kycEYrMUc3RJ_WQ1Oe5ztZqx_S_is",
+      authDomain: "graphit-js.firebaseapp.com",
+      databaseURL: "https://graphit-js.firebaseio.com",
+      projectId: "graphit-js",
+      storageBucket: "graphit-js.appspot.com",
+      messagingSenderId: "694181552879"
+    };
+    const fb = firebase.initializeApp(config);
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/5.7.2/firebase-database.js"></script>
 
-		let zero, p;
-		let g = graphit;
-		//let p = g.setNode('teste').then((node) => n = node);
-		f();
+    <script src="./src/graphit.js"></script>
+    <script type="text/javascript" src="./src/graphit-firebase.js"></script>
 
-		async function f() {
-			let list = [], aux;
-			for(let i = 0; i < 5; i++) {
-				let ant = aux || null;
-				console.log(aux = await g.node({id: i, obj: `teste[${i}]`}));
-				console.log(await g.adj({from_id: i}));
-				/*list.push({to: aux.id, data: ant && ant.id});
-				for(let j = i; j <= i; j++) {
-					console.log('\t', await g.adj({from_id: j, list}));
-				}*/
-			}
-		}
+    <link rel="stylesheet" type="text/css" href="./style/index.css">
+  </head>
 
-	</script>
-	<!-- <script type="module" src="./src/index.js"></script> -->
-</body>
+  <body>
+    <div class="Cabeçalho">
+      <input type="file" accept=".json">
+      <button type="submit">💾 salvar</button>
+      <span id='save_at'></span>
+    </div>
+    <div id="painel1" class="Painel"></div>
+    <script type="text/javascript">
+    let graphit = new Graphit_Firebase(fb);
+    console.log({ graphit });
+
+    let zero, p;
+    let g = graphit;
+    //let p = g.setNode('teste').then((node) => n = node);
+    f();
+
+    async function f() {
+      let list = [],
+        aux;
+      for (let i = 0; i < 5; i++) {
+        let ant = aux || null;
+        console.log(aux = await g.node({ id: i, obj: `teste[${i}]` }));
+        console.log(await g.adj({ from_id: i }));
+        /*list.push({to: aux.id, data: ant && ant.id});
+        for(let j = i; j <= i; j++) {
+        	console.log('\t', await g.adj({from_id: j, list}));
+        }*/
+      }
+    }
+    </script>
+    <!-- <script type="module" src="./src/index.js"></script> -->
+  </body>
+
 </html>
