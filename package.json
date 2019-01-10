@@ -8,10 +8,11 @@
     "server-static": "^2.0.5"
   },
   "devDependencies": {
+    "firebase-admin": "^6.4.0",
     "jasmine": "^3.3.1"
   },
   "scripts": {
-    "test": "npm test",
+    "test": "jasmine",
     "start": "node server.js"
   },
   "repository": {
