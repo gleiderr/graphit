@@ -98,7 +98,7 @@ class Graphit {
 
   //Remove objeto e lista de adjacência referenciados por [id].
   remove(id) {
-    return database.remove(id);
+    return this.database.remove(id);
   }
 }
 
