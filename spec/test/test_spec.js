@@ -88,16 +88,76 @@ describe("Graphit integrado ao Firebase", function() {
     });
   });
 
-  describe('Graphit.adj()', function() {
-    it(', quando não informado [id], deve lançar erro.', function() {
-      return g.adj({ list: [1] })
-        .then(() => fail('Inserção indevida concluída com sucesso!'))
-        .catch((error) => expect(() => { throw error; }).toThrowError());
+  describe('Graphit.adj(),', function() {
+    describe('não informado [from_id],', () => {
+      it('deve lançar erro.', function() {
+        return g.adj({ list: [1] })
+          .then(() => fail('Inserção indevida concluída com sucesso!'))
+          .catch((error) => expect(() => { throw error; }).toThrowError());
+      });
+    });
+
+    describe('informado [from_id],', function() {
+      let from_id = 0;
+      describe('informada [list],', function() {
+        let list = [1, 2, 3];
+        it('deve retornar AdjacencyList com [from_id] e [list] iguais aos informados.', () => {
+          return g.adj({ from_id, list })
+            .then(adj => {
+              expect(adj.from_id).toEqual(from_id);
+              expect(adj.list).toEqual(list);
+            })
+            .catch(error => fail(error));
+        });
+      });
+
+      describe('não informada [list],', function() {
+        describe('[from_id] inexistente,', () => {
+          it('deve retornar AdjacencyList com [from_id] igual ao informado e [list] vazia.', async () => {
+            await g.remove(from_id);
+            return g.adj({ from_id })
+              .then((adj) => {
+                expect(adj.from_id).toEqual(from_id);
+                expect(adj.list).toEqual([]);
+              });
+          });
+        });
+
+        describe('[from_id] existente,', () => {
+          it('deve retornar AdjacencyList com [from_id] e [list] iguais à base.', async () => {
+            const list = [1, 2, 3];
+            const adj = await g.adj({ from_id, list });
+
+            return g.adj({ from_id })
+              .then(adj => {
+                expect(adj.from_id).toEqual(from_id);
+                expect(adj.list).toEqual(list);
+              })
+              .catch(error => fail(error));
+          });
+        });
+      });
     });
   });
 
-  xit("deve permitir a exclusão de strings", function() {
-    fail('Teste não escrito');
-  });
+  describe('Graphit.remove()', () => {
+    let id, obj, list;
+    beforeAll(async () => {
+      obj = Math.random();
+      id = 0;
+      list = [0, 1, 2];
 
+      await g.node({ id, obj });
+      await g.adj({ from_id: id, list });
+    });
+
+    it("deve garantir inexistência de [id] na base após a remoção.", () => {
+      return g.remove(id)
+        .then(async () => {
+          const node = await g.node({ id });
+          expect(node.obj).toBeUndefined();
+        })
+        .catch(error => fail(error));
+    });
+  });
 });
