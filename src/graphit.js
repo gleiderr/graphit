@@ -21,7 +21,7 @@ const base_model = {
  * na base de dados;
  */
 class GNode {
-  constructor(id, data, graphit) {
+  constructor(id, data) {
     this.id = id;
     this.data = data;
   }
@@ -31,7 +31,7 @@ class GNode {
  * são gravados na base de dados.
  */
 class AdjacencyList {
-  constructor(from_id, list, graphit) {
+  constructor(from_id, list) {
     this.from_id = from_id;
     this.list = list || [];
   }
