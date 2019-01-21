@@ -2,7 +2,7 @@
 class Graphit_Firebase {
 
   constructor(database, reference) {
-    this.database = database;
+    this.database_ref = database.ref(reference);
     this.nodesRef = database.ref(reference).child('nodes');
     this.adjRef = database.ref(reference).child('adjacent_lists');
 
@@ -31,7 +31,7 @@ class Graphit_Firebase {
     aux['/' + this.nodesRef.key + '/' + id] = null;
     aux['/' + this.adjRef.key + '/' + id] = null;
 
-    this.database.ref().update(aux);
+    return this.database_ref.update(aux);
   }
 }
 
