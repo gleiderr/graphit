@@ -10,10 +10,14 @@ admin.initializeApp({
 });
 admin.auth();
 
-let test_ref = '__graphit-test__';
-let g = new Graphit(new Graphit_Firebase(admin.database(), test_ref));
+let test_ref, g;
 
 describe("Graphit integrado ao Firebase", function() {
+  beforeAll(function() {
+    test_ref = '__graphit-test__';
+    g = new Graphit(new Graphit_Firebase(admin.database(), test_ref));
+  });
+
   afterAll(function() {
     admin.database().ref(test_ref).remove();
   });
@@ -62,7 +66,7 @@ describe("Graphit integrado ao Firebase", function() {
               expect(obj.id).toEqual(new_obj.id);
               expect(obj.obj).toEqual(value);
             })
-            .catch((error) => fail(error));;
+            .catch((error) => fail(error));
         });
 
         it('(id não existente na base), deve retornar instância de GNode com [id] igual ao informado e [obj] indefinido.', async function() {
@@ -77,7 +81,7 @@ describe("Graphit integrado ao Firebase", function() {
               expect(obj.id).toEqual(id);
               expect(obj.obj).toBeUndefined();
             })
-            .catch((error) => fail(error));;
+            .catch((error) => fail(error));
         });
 
       });
@@ -87,7 +91,7 @@ describe("Graphit integrado ao Firebase", function() {
   describe('Graphit.adj()', function() {
     it(', quando não informado [id], deve lançar erro.', function() {
       return g.adj({ list: [1] })
-        .then(() => fail('Inserção indevidamente concluída com sucesso!'))
+        .then(() => fail('Inserção indevida concluída com sucesso!'))
         .catch((error) => expect(() => { throw error; }).toThrowError());
     });
   });
