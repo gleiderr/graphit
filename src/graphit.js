@@ -81,7 +81,7 @@ class Graphit {
   adj({ from_id, list }) {
     return new Promise((resolve, reject) => {
       if (from_id == undefined) {
-        reject(new Error('Defina from_id antes lista de adjacência!'));
+        reject(new Error('from_id indefinido!'));
       }
 
       if (list == undefined) { //recupera list da base
