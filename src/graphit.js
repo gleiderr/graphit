@@ -21,9 +21,9 @@ const base_model = {
  * na base de dados;
  */
 class GNode {
-  constructor(id, obj, graphit) {
+  constructor(id, data, graphit) {
     this.id = id;
-    this.obj = obj;
+    this.data = data;
   }
 }
 
@@ -44,29 +44,29 @@ class Graphit {
     this.database = database;
   }
 
-  /* Recebe objeto {id, obj} que é persistido no Firebase e retorna uma 
+  /* Recebe objeto {id, data} que é persistido no Firebase e retorna uma 
   [Promise] que resolve em uma nova instância de GNode em caso de sucesso. Se 
-  [id] for [undefined], é criada uma nova id onde [obj] será gravado ou de onde 
-  será recuperado. Se [obj] for [undefined], será recuperado o conteúdo
-  referenciado por [id], caso contrário [obj] será atribuido ao conteúdo 
+  [id] for [undefined], é criada uma nova id onde [data] será gravado ou de onde 
+  será recuperado. Se [data] for [undefined], será recuperado o conteúdo
+  referenciado por [id], caso contrário [data] será atribuido ao conteúdo 
   referenciado por [id].
   */
-  node({ id, obj } = {}) {
+  node({ id, data } = {}) {
     return new Promise((resolve, reject) => {
       if (id == undefined) {
         id = this.database.new_id(); //define novo id na base
-        if (obj == undefined) {
-          resolve(new GNode(id, obj));
+        if (data == undefined) {
+          resolve(new GNode(id, data));
         }
       }
 
-      if (obj == undefined) { //recupera obj da base
+      if (data == undefined) { //recupera data da base
         this.database.retrieve_val(id)
-          .then(val => resolve(new GNode(id, val)))
+          .then(data => resolve(new GNode(id, data)))
           .catch(error => reject(error));
-      } else { //atribui obj na base
-        this.database.set_val({ id, obj })
-          .then(() => resolve(new GNode(id, obj)))
+      } else { //atribui data na base
+        this.database.set_val({ id, data })
+          .then(() => resolve(new GNode(id, data)))
           .catch((error) => reject(error));
       }
     });

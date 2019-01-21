@@ -8,8 +8,8 @@ class Graphit_Firebase {
 
     this.retrieve_val = (id) => this.retrieve(id, this.nodesRef);
     this.retrieve_list = (id) => this.retrieve(id, this.adjRef);
-    this.set_val = ({ id, obj }) => this.set({ id, obj }, this.nodesRef);
-    this.set_list = ({ from_id, list }) => this.set({ id: from_id, obj: list }, this.adjRef);
+    this.set_val = ({ id, data }) => this.set({ id, data }, this.nodesRef);
+    this.set_list = ({ from_id, list }) => this.set({ id: from_id, data: list }, this.adjRef);
     this.new_id = () => this.nodesRef.push().key;
   }
 
@@ -21,8 +21,8 @@ class Graphit_Firebase {
     });
   }
 
-  set({ id, obj }, ref) {
-    return ref.child(id).set(obj);
+  set({ id, data }, ref) {
+    return ref.child(id).set(data);
   }
 
   //Remove objeto e lista de adjacência referenciados por [id].

@@ -25,20 +25,20 @@ describe("Graphit integrado ao Firebase", function() {
   describe('Graphit.node()', function() {
     describe(', quando não informado [id]', function() {
       it("e informado [obj], deve retornar instância de GNode com algum novo [id] e [obj] igual ao informado.", function() {
-        const value = 'teste';
-        return g.node({ obj: value })
-          .then(obj => {
-            expect(obj.id).toEqual(jasmine.anything());
-            expect(obj.obj).toEqual(value);
+        const data = 'teste';
+        return g.node({ data })
+          .then(node => {
+            expect(node.id).toEqual(jasmine.anything());
+            expect(node.data).toEqual(data);
           })
           .catch((error) => fail(error));
       });
 
       it("e não informado [obj], deve retornar instância de GNode com novo [id] definido e [obj] indefinido.", function() {
         return g.node({})
-          .then(obj => {
-            expect(obj.id).toEqual(jasmine.anything());
-            expect(obj.obj).toBeUndefined();
+          .then(node => {
+            expect(node.id).toEqual(jasmine.anything());
+            expect(node.data).toBeUndefined();
           })
           .catch((error) => fail(error));
       });
@@ -46,25 +46,25 @@ describe("Graphit integrado ao Firebase", function() {
 
     describe(', quando informado [id]', function() {
       it('e informado [obj], deve retornar instância de GNode com [id] e [obj] iguais aos informados.', function() {
-        const value = Math.random();
+        const data = Math.random();
         id = 0;
-        return g.node({ id, obj: value })
-          .then(obj => {
-            expect(obj.id).toEqual(id);
-            expect(obj.obj).toEqual(value);
+        return g.node({ id, data })
+          .then(node => {
+            expect(node.id).toEqual(id);
+            expect(node.data).toEqual(data);
           })
           .catch((error) => fail(error));
       });
 
       describe('e não informado [obj]', function() {
         it('(id existente na base), deve retornar instância de GNode com [id] igual ao informado e [obj] igual ao existente na base.', async function() {
-          const value = Math.random();
-          new_obj = await g.node({ obj: value });
+          const data = Math.random();
+          new_obj = await g.node({ data });
 
           return g.node({ id: new_obj.id })
-            .then(obj => {
-              expect(obj.id).toEqual(new_obj.id);
-              expect(obj.obj).toEqual(value);
+            .then(node => {
+              expect(node.id).toEqual(new_obj.id);
+              expect(node.data).toEqual(data);
             })
             .catch((error) => fail(error));
         });
@@ -74,12 +74,12 @@ describe("Graphit integrado ao Firebase", function() {
           do {
             id = Math.ceil(Math.random() * 1000);
             new_obj = await g.node({ id });
-          } while (new_obj.obj != undefined);
+          } while (new_obj.data != undefined);
 
           return g.node({ id })
             .then(obj => {
               expect(obj.id).toEqual(id);
-              expect(obj.obj).toBeUndefined();
+              expect(obj.data).toBeUndefined();
             })
             .catch((error) => fail(error));
         });
@@ -141,13 +141,13 @@ describe("Graphit integrado ao Firebase", function() {
   });
 
   describe('Graphit.remove()', () => {
-    let id, obj, list;
+    let id, data, list;
     beforeAll(async () => {
-      obj = Math.random();
+      data = Math.random();
       id = 0;
       list = [0, 1, 2];
 
-      await g.node({ id, obj });
+      await g.node({ id, data });
       await g.adj({ from_id: id, list });
     });
 
@@ -155,7 +155,7 @@ describe("Graphit integrado ao Firebase", function() {
       return g.remove(id)
         .then(async () => {
           const node = await g.node({ id });
-          expect(node.obj).toBeUndefined();
+          expect(node.data).toBeUndefined();
         })
         .catch(error => fail(error));
     });
