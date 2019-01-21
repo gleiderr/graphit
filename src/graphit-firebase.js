@@ -15,7 +15,7 @@ class Graphit_Firebase {
 
   retrieve(id, ref) {
     return new Promise((resolve, reject) => {
-      this.nodesRef.child(id).on('value',
+      ref.child(id).on('value',
         (snapshot) => resolve(snapshot.val() == null ? undefined : snapshot.val()),
         (error) => reject(error));
     });
