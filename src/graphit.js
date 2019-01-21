@@ -85,7 +85,7 @@ class Graphit {
       }
 
       if (list == undefined) { //recupera list da base
-        this.database.retrieve_list(id)
+        this.database.retrieve_list(from_id)
           .then(list => resolve(new AdjacencyList(from_id, list)))
           .catch(error => reject(error));
       } else { //atribui list na base
