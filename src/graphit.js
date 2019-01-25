@@ -9,7 +9,7 @@ const base_model = {
     '#4': 'Qualquer texto 4'
   },
   adjacency_lists: {
-    '#0': [{ to: '#0', data: {}}, { to: '#1', data: {}}, { to: '#2', data: {}}, { to: '#3', data: {}}, { to: '#4', data: {}}],
+    '#0': [{ to: '#0', label: '#4'}, { to: '#1', label: '#4'}, { to: '#2', label: '#4'}, { to: '#3', label: '#4'}, { to: '#4', label: '#4'}],
     '#1': [],
     '#2': [],
     '#3': [],
