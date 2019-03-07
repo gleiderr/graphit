@@ -10,9 +10,9 @@ Explicitar relacionamentos entre informações pode auxiliar sua fundamentação
 ## Base de Dados
 
 A definição da base de dados não define qual ferramenta deve ser utilizada para armazenar os dados.
-Cada [GNode] deve conter um [identificador] único e seu dado propriamente dito;
-Cada [GEdge] deve referenciar seu nodo de destino
-Cada [GList] deve conter um [identificador] único que referencia seu nodo de origem e uma lista de [GEdge]s
+- Cada [GNode] deve conter um [identificador] único e seu dado propriamente dito;
+- Cada [GEdge] deve referenciar seu nodo de destino
+- Cada [GList] deve conter um [identificador] único que referencia seu nodo de origem e uma lista de [GEdge]s
 
 O Graphit atualmente foi desenvolvido para manipular:
 - Firebase.
