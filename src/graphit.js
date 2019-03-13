@@ -30,7 +30,7 @@ class GNode {
 /* Define a estrutura padrão de uma lista de adjacências. Somente [id] e [list]
  * são gravados na base de dados.
  */
-class AdjacencyList {
+class GList {
   constructor(from_id, list) {
     this.from_id = from_id;
     this.list = list || [];
@@ -75,7 +75,7 @@ class Graphit {
   /* Recebe objeto { from_id, list } que é persistido no Firebase e retorna uma
   [Promise] que resolve em uma instância de AdjacencyList em caso de sucesso. 
   [from_id] já deve ser informado. Se [list] for [undefined] será recuperada a
-  lista referenciada por [id], caso contrário [list] será atribuido ao conteúdo 
+  lista referenciada por [from_id], caso contrário [list] será atribuido ao conteúdo 
   referenciado por [from_id];
   */
   adj({ from_id, list }) {
@@ -86,11 +86,11 @@ class Graphit {
 
       if (list == undefined) { //recupera list da base
         this.database.retrieve_list(from_id)
-          .then(list => resolve(new AdjacencyList(from_id, list)))
+          .then(list => resolve(new GList(from_id, list)))
           .catch(error => reject(error));
       } else { //atribui list na base
         this.database.set_list({ from_id, list })
-          .then(() => resolve(new AdjacencyList(from_id, list)))
+          .then(() => resolve(new GList(from_id, list)))
           .catch((error) => reject(error));
       }
     });
