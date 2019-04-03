@@ -1,25 +1,13 @@
-const admin = require("firebase-admin");
-const serviceAccount = require("../../graphit-js-firebase-adminsdk.json");
-
 const Graphit = require('../../src/graphit').Graphit;
-const Graphit_Firebase = require('../../src/graphit-firebase').Graphit_Firebase;
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://graphit-js.firebaseio.com"
-});
-admin.auth();
-
-let test_ref, g;
-
-describe("Graphit integrado ao Firebase", function() {
+describe("Graphit", function() {
   beforeAll(function() {
     test_ref = '__graphit-test__';
-    g = new Graphit(new Graphit_Firebase(admin.database(), test_ref));
+    g = new Graphit(new Database());
   });
 
   afterAll(function() {
-    admin.database().ref(test_ref).remove();
+    
   });
 
   describe('Graphit.node()', function() {

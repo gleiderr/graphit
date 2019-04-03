@@ -102,4 +102,6 @@ class Graphit {
   }
 }
 
-module.exports.Graphit = Graphit;
+if(module) {
+  module.exports.Graphit = Graphit;
+}
