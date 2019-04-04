@@ -1,7 +1,8 @@
 module.exports = {
     "env": {
         "browser": true,
-        "es6": true
+        "es6": true,
+        "jasmine": true
     },
     "extends": "eslint:recommended",
     "globals": {
@@ -15,25 +16,29 @@ module.exports = {
         "ecmaVersion": 2018,
         "sourceType": "module"
     },
-    "plugins": [
-        "react"
-    ],
     "rules": {
         "indent": [
             "error",
-            4
+            2
         ],
         "linebreak-style": [
             "error",
             "windows"
         ],
         "quotes": [
-            "error",
+            "warn",
             "single"
         ],
         "semi": [
             "error",
             "always"
+        ],
+        "no-unused-vars": [
+            "warn"
+        ],
+        "no-undef": [
+            "warn",
+            { "typeof": false}
         ]
     }
 };
