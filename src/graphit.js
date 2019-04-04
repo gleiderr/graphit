@@ -102,6 +102,6 @@ class Graphit {
   }
 }
 
-if(module) {
+if(typeof module !== undefined) {
   module.exports.Graphit = Graphit;
 }
