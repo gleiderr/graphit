@@ -1,18 +1,26 @@
+/*eslint-env node*/
 const Graphit = require('../../src/graphit').Graphit;
 
-describe("Graphit", function() {
-  beforeAll(function() {
-    test_ref = '__graphit-test__';
-    g = new Graphit(new Database());
-  });
+let g;
 
-  afterAll(function() {
-    
+//Mockup de banco de dados
+class Database {
+  new_id() { return Promise.resolve(); }
+  retrieve_val(id) { return Promise.resolve(); }
+  set_val({ id, data }) { return Promise.resolve(); }
+  retrieve_list(from_id) { return Promise.resolve(); }
+  set_list({ from_id, list }) { return Promise.resolve(); }
+  remove(id) { return Promise.resolve(); }
+}
+
+describe('Graphit puro:', function() {
+  beforeAll(function() {
+    g = new Graphit(new Database());
   });
 
   describe('Graphit.node()', function() {
     describe(', quando não informado [id]', function() {
-      it("e informado [obj], deve retornar instância de GNode com algum novo [id] e [obj] igual ao informado.", function() {
+      it('e informado [obj], deve retornar instância de GNode com algum novo [id] e [obj] igual ao informado.', function() {
         const data = 'teste';
         return g.node({ data })
           .then(node => {
@@ -22,7 +30,7 @@ describe("Graphit", function() {
           .catch((error) => fail(error));
       });
 
-      it("e não informado [obj], deve retornar instância de GNode com novo [id] definido e [obj] indefinido.", function() {
+      it('e não informado [obj], deve retornar instância de GNode com novo [id] definido e [obj] indefinido.', function() {
         return g.node({})
           .then(node => {
             expect(node.id).toEqual(jasmine.anything());
@@ -139,7 +147,7 @@ describe("Graphit", function() {
       await g.adj({ from_id: id, list });
     });
 
-    it("deve garantir inexistência de [id] na base após a remoção.", () => {
+    it('deve garantir inexistência de [id] na base após a remoção.', () => {
       return g.remove(id)
         .then(async () => {
           const node = await g.node({ id });
