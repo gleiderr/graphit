@@ -17,143 +17,121 @@ describe('Graphit puro:', function() {
   beforeAll(function() {
     g = new Graphit(new Database());
   });
-
-  describe('Graphit.node()', function() {
-    describe(', quando não informado [id]', function() {
-      it('e informado [obj], deve retornar instância de GNode com algum novo [id] e [obj] igual ao informado.', function() {
-        const data = 'teste';
-        return g.node({ data })
-          .then(node => {
-            expect(node.id).toEqual(jasmine.anything());
-            expect(node.data).toEqual(data);
-          })
-          .catch((error) => fail(error));
-      });
-
-      it('e não informado [obj], deve retornar instância de GNode com novo [id] definido e [obj] indefinido.', function() {
-        return g.node({})
-          .then(node => {
-            expect(node.id).toEqual(jasmine.anything());
-            expect(node.data).toBeUndefined();
-          })
-          .catch((error) => fail(error));
-      });
-    });
-
-    describe(', quando informado [id]', function() {
-      it('e informado [obj], deve retornar instância de GNode com [id] e [obj] iguais aos informados.', function() {
-        const data = Math.random();
-        id = 0;
-        return g.node({ id, data })
-          .then(node => {
-            expect(node.id).toEqual(id);
-            expect(node.data).toEqual(data);
-          })
-          .catch((error) => fail(error));
-      });
-
-      describe('e não informado [obj]', function() {
-        it('(id existente na base), deve retornar instância de GNode com [id] igual ao informado e [obj] igual ao existente na base.', async function() {
-          const data = Math.random();
-          new_obj = await g.node({ data });
-
-          return g.node({ id: new_obj.id })
-            .then(node => {
-              expect(node.id).toEqual(new_obj.id);
-              expect(node.data).toEqual(data);
-            })
-            .catch((error) => fail(error));
-        });
-
-        it('(id não existente na base), deve retornar instância de GNode com [id] igual ao informado e [obj] indefinido.', async function() {
-          let new_obj, id;
-          do {
-            id = Math.ceil(Math.random() * 1000);
-            new_obj = await g.node({ id });
-          } while (new_obj.data != undefined);
-
-          return g.node({ id })
-            .then(obj => {
-              expect(obj.id).toEqual(id);
-              expect(obj.data).toBeUndefined();
-            })
-            .catch((error) => fail(error));
-        });
-
-      });
-    });
+  
+  it('Graphit.node(), deve retornar instância de GNode com novo [id] definido e [obj] indefinido.', function() {
+    return g.node({})
+      .then(node => {
+        expect(node.id).toEqual(jasmine.anything());
+        expect(node.data).toBeUndefined();
+      })
+      .catch((error) => fail(error));
   });
 
-  describe('Graphit.adj(),', function() {
-    describe('não informado [from_id],', () => {
-      it('deve lançar erro.', function() {
-        return g.adj({ list: [1] })
-          .then(() => fail('Inserção indevida concluída com sucesso!'))
-          .catch((error) => expect(() => { throw error; }).toThrowError());
-      });
-    });
-
-    describe('informado [from_id],', function() {
-      let from_id = 0;
-      describe('informada [list],', function() {
-        let list = [1, 2, 3];
-        it('deve retornar AdjacencyList com [from_id] e [list] iguais aos informados.', () => {
-          return g.adj({ from_id, list })
-            .then(adj => {
-              expect(adj.from_id).toEqual(from_id);
-              expect(adj.list).toEqual(list);
-            })
-            .catch(error => fail(error));
-        });
-      });
-
-      describe('não informada [list],', function() {
-        describe('[from_id] inexistente,', () => {
-          it('deve retornar AdjacencyList com [from_id] igual ao informado e [list] vazia.', async () => {
-            await g.remove(from_id);
-            return g.adj({ from_id })
-              .then((adj) => {
-                expect(adj.from_id).toEqual(from_id);
-                expect(adj.list).toEqual([]);
-              });
-          });
-        });
-
-        describe('[from_id] existente,', () => {
-          it('deve retornar AdjacencyList com [from_id] e [list] iguais à base.', async () => {
-            const list = [1, 2, 3];
-            const adj = await g.adj({ from_id, list });
-
-            return g.adj({ from_id })
-              .then(adj => {
-                expect(adj.from_id).toEqual(from_id);
-                expect(adj.list).toEqual(list);
-              })
-              .catch(error => fail(error));
-          });
-        });
-      });
-    });
+  it('Graphit.node({data: 1}), GNode { id: any, data: 1}', function() {
+    const data = 'teste';
+    return g.node({ data })
+      .then(node => {
+        expect(node.id).toEqual(jasmine.anything());
+        expect(node.data).toEqual(data);
+      })
+      .catch((error) => fail(error));
   });
 
-  describe('Graphit.remove()', () => {
+  it('Graphit.node({id: 0}) (id existente na base), deve retornar GNode { id: 0, data}, [data] igual ao existente na base.', async function() {
+    //Pré inserção na base
+    const data = Math.random();
+    const new_obj = await g.node({ data });
+    console.log({new_obj});
+
+    return g.node({ id: new_obj.id })
+      .then(node => {
+        expect(node.id).toEqual(new_obj.id);
+        expect(node.data).toEqual(data);
+      })
+      .catch((error) => fail(error));
+  });
+
+  it('Graphit.node({id}) (id não existente na base), deve retornar instância de GNode com [id] igual ao informado e [obj] indefinido.', async function() {
+    let new_obj, id;
+    do {
+      id = Math.ceil(Math.random() * 1000);
+      new_obj = await g.node({ id });
+    } while (new_obj.data != undefined);
+
+    return g.node({ id })
+      .then(obj => {
+        expect(obj.id).toEqual(id);
+        expect(obj.data).toBeUndefined();
+      })
+      .catch((error) => fail(error));
+  });
+
+  it('Graphit.node({id, data}), deve retornar instância de GNode com [id] e [obj] iguais aos informados.', function() {
+    const data = Math.random();
+    id = 0;
+    return g.node({ id, data })
+      .then(node => {
+        expect(node.id).toEqual(id);
+        expect(node.data).toEqual(data);
+      })
+      .catch((error) => fail(error));
+  });
+
+  it('Graphit.adj(), não informado [from_id], deve lançar erro.', function() {
+    return g.adj({ list: [1] })
+      .then(() => fail('Inserção indevida concluída com sucesso!'))
+      .catch((error) => expect(() => { throw error; }).toThrowError());
+  });
+
+  it('Graphit.adj({from_id, list}), deve retornar AdjacencyList com [from_id] e [list] iguais aos informados.', () => {
+    let from_id = 0;
+    let list = [1, 2, 3];
+    return g.adj({ from_id, list })
+      .then(adj => {
+        expect(adj.from_id).toEqual(from_id);
+        expect(adj.list).toEqual(list);
+      })
+      .catch(error => fail(error));
+  });
+
+  it('Graphit.adj({from_id}), [from_id] inexistente, deve retornar AdjacencyList com [from_id] igual ao informado e [list] vazia.', async () => {
+    let from_id = 0;
+    await g.remove(from_id);
+    return g.adj({ from_id })
+      .then((adj) => {
+        expect(adj.from_id).toEqual(from_id);
+        expect(adj.list).toEqual([]);
+      });
+  });
+
+  it('Graphit.adj({from_id}), [from_id] existente, deve retornar AdjacencyList com [from_id] e [list] iguais à base.', async () => {
+    let from_id = 0;
+    const list = [1, 2, 3];
+    const adj = await g.adj({ from_id, list });
+
+    return g.adj({ from_id })
+      .then(adj => {
+        expect(adj.from_id).toEqual(from_id);
+        expect(adj.list).toEqual(list);
+      })
+      .catch(error => fail(error));
+  });
+
+  it('Graphit.remove() deve garantir inexistência de [id] na base após a remoção.', () => {
     let id, data, list;
-    beforeAll(async () => {
+    (async () => {
       data = Math.random();
       id = 0;
       list = [0, 1, 2];
 
       await g.node({ id, data });
       await g.adj({ from_id: id, list });
-    });
-
-    it('deve garantir inexistência de [id] na base após a remoção.', () => {
-      return g.remove(id)
-        .then(async () => {
-          const node = await g.node({ id });
-          expect(node.data).toBeUndefined();
-        })
-        .catch(error => fail(error));
-    });
+    })();
+    return g.remove(id)
+      .then(async () => {
+        const node = await g.node({ id });
+        expect(node.data).toBeUndefined();
+      })
+      .catch(error => fail(error));
   });
 });
