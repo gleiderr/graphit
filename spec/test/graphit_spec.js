@@ -5,12 +5,36 @@ let g;
 
 //Mockup de banco de dados
 class Database {
-  new_id() { return Promise.resolve(); }
-  retrieve_val(id) { return Promise.resolve(); }
-  set_val({ id, data }) { return Promise.resolve(); }
-  retrieve_list(from_id) { return Promise.resolve(); }
-  set_list({ from_id, list }) { return Promise.resolve(); }
-  remove(id) { return Promise.resolve(); }
+  constructor() {
+    this.db = {};
+    this.list = {};
+    this.lastId = 0;
+  }
+  new_id() { return this.lastId++; }
+
+  retrieve_val(id) { 
+    return Promise.resolve(this.db[id]); 
+  }
+
+  set_val({ id, data }) {
+    this.db[id] = data;
+    return Promise.resolve({id, data}); 
+  }
+
+  retrieve_list(from_id) { 
+    return Promise.resolve(this.list[from_id]); 
+  }
+  
+  set_list({ from_id, list }) {
+    this.list[from_id] = list;
+    return Promise.resolve(this.list[from_id]); 
+  }
+
+  remove(id) { 
+    delete this.db[id];
+    delete this.list[id];
+    return Promise.resolve(); 
+  }
 }
 
 describe('Graphit puro:', function() {
@@ -37,15 +61,25 @@ describe('Graphit puro:', function() {
       .catch((error) => fail(error));
   });
 
-  it('Graphit.node({id: 0}) (id existente na base), deve retornar GNode { id: 0, data}, [data] igual ao existente na base.', async function() {
+  it('Graphit.node({id: 0}) (id existente na base), deve retornar GNode { id: 0, data}, [id] igual ao existente na base.', async function() {
     //Pré inserção na base
     const data = Math.random();
     const new_obj = await g.node({ data });
-    console.log({new_obj});
 
     return g.node({ id: new_obj.id })
       .then(node => {
         expect(node.id).toEqual(new_obj.id);
+      })
+      .catch((error) => fail(error));
+  });
+
+  it('Graphit.node({id: 0}) (id existente na base), deve retornar GNode { id: 0, data}, [data] igual ao existente na base.', async function() {
+    //Pré inserção na base
+    const data = Math.random();
+    const new_obj = await g.node({ data });
+
+    return g.node({ id: new_obj.id })
+      .then(node => {
         expect(node.data).toEqual(data);
       })
       .catch((error) => fail(error));
