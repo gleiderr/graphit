@@ -33,7 +33,7 @@ class GNode {
 class GList {
   constructor(from_id, list) {
     this.from_id = from_id;
-    this.list = list || [];
+    this.list = list;
   }
 }
 

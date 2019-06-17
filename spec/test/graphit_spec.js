@@ -128,13 +128,13 @@ describe('Graphit puro:', function() {
       .catch(error => fail(error));
   });
 
-  it('Graphit.adj({from_id}), [from_id] inexistente, deve retornar AdjacencyList com [from_id] igual ao informado e [list] vazia.', async () => {
+  it('Graphit.adj({from_id}), [from_id] inexistente, deve retornar AdjacencyList com [from_id] igual ao informado e list indefinida.', async () => {
     let from_id = 0;
     await g.remove(from_id);
     return g.adj({ from_id })
       .then((adj) => {
         expect(adj.from_id).toEqual(from_id);
-        expect(adj.list).toEqual([]);
+        expect(adj.list).toBeUndefined();
       });
   });
 
